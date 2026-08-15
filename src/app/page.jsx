@@ -63,14 +63,25 @@ export default function HomePage() {
         </div>
 
         {/* LIVE BANNER */}
-        <div className="flex w-full items-center gap-3 border-y border-[#f48048] bg-orange-500/20 px-6 py-3">
+        <div className="flex w-full items-center gap-3 overflow-hidden border-y border-[#f48048] bg-orange-500/20 px-3 py-3">
           <span className="relative flex h-2 w-2 shrink-0">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-500 opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-orange-500" />
           </span>
-          <p className="text-[13px] font-bold text-white">
-            Tonight: Sunset DJ Sessions (9 PM — Late)
-          </p>
+          <div className="relative min-w-0 flex-1 overflow-hidden">
+            <div className="animate-marquee flex min-w-max whitespace-nowrap text-[13px] font-bold text-white">
+              {[0, 1].map((copy) => (
+                <div key={copy} className="flex shrink-0 items-center">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <span key={i} className="flex items-center">
+                      <span className="px-3">Live Musik Mulai Jam 6 Sore</span>
+                      <span className="px-1 text-orange-300">•</span>
+                    </span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
