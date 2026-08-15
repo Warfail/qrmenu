@@ -161,6 +161,9 @@ export default function HomePage() {
               Jl. Veteran No.13 Blok K, Mangunsari, Kota Salatiga, Jawa Tengah
             </span>
           </a>
+          <p className="mt-3 text-[11px] font-medium tracking-wide text-zinc-500">
+            Design by <span className="font-semibold text-zinc-300">Rezky A.K</span>
+          </p>
         </div>
       </footer>
 
