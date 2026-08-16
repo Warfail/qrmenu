@@ -8,6 +8,13 @@ import {
   IconPlus,
   IconMinus,
   IconChevronRight,
+  IconMenu2,
+  IconX,
+  IconCategory,
+  IconBowl,
+  IconCup,
+  IconPackages,
+  IconChevronLeft,
 } from "@tabler/icons-react";
 import OrderSheet from "@/components/OrderSheet";
 import { useCart } from "@/components/CartContext";
@@ -23,6 +30,25 @@ function formatIDR(value) {
 
 const ALL_CATEGORY = { id: "all", name: "All", icon: "", description: "" };
 
+// Kelompok tipe menu berdasarkan kategori dari JSON
+const FOOD_CATEGORIES = [
+  "CARBOHYDRATE BOOSTERS",
+  "HEAVYWEIGHT CHAMPIONS",
+  "THE MARINE TOURNAMENT",
+  "TACTICAL RECHARGE & RECOVERY",
+  "HALF-TIME BITES & SNACK LEAGUE",
+  "THE ADDITIONAL PLAYERS",
+];
+const DRINK_CATEGORIES = [
+  "CAFFEINE INJECTORS",
+  "CLUTCH PERFORMANCE",
+  "ENDURANCE LAB & HYPERDRIVE",
+  "FLUID HYDRATION & REFRESHER",
+  "POST-MATCH HEALING",
+  "THE CELEBRATION",
+];
+const OTHER_CATEGORIES = ["Rokok"];
+
 const BG_IMAGE =
   "https://api.builder.io/api/v1/image/assets/TEMP/979e074464d8e4c44b55b3a495ff275e80e38426?placeholderIfAbsent=true";
 
@@ -32,12 +58,14 @@ export default function MenuPage() {
 
   const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [activeType, setActiveType] = useState("all"); // all | makanan | minuman | lainnya
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [loadingCats, setLoadingCats] = useState(true);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [error, setError] = useState("");
   const [showOrder, setShowOrder] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const searchRef = useRef(null);
   const activeRef = useRef(null);
@@ -120,10 +148,58 @@ export default function MenuPage() {
     [cart]
   );
 
+  // Kategori yang tampil di carousel berdasarkan tipe aktif
+  const visibleCategories = useMemo(() => {
+    if (activeType === "makanan") {
+      return categories.filter((c) => FOOD_CATEGORIES.includes(c.name));
+    }
+    if (activeType === "minuman") {
+      return categories.filter((c) => DRINK_CATEGORIES.includes(c.name));
+    }
+    if (activeType === "lainnya") {
+      return categories.filter((c) => OTHER_CATEGORIES.includes(c.name));
+    }
+    return categories;
+  }, [categories, activeType]);
+
   const categoriesList = useMemo(
-    () => [ALL_CATEGORY, ...categories],
-    [categories]
+    () => [ALL_CATEGORY, ...visibleCategories],
+    [visibleCategories]
   );
+
+  // Saat pilih tipe dari drawer, reset kategori aktif ke "All" & tutup drawer
+  function selectType(type) {
+    setActiveType(type);
+    setActiveCategory("All");
+    setDrawerOpen(false);
+  }
+
+  const menuGroups = [
+    {
+      id: "all",
+      label: "Kategori",
+      icon: IconCategory,
+      desc: `${categories.length} kategori lengkap`,
+    },
+    {
+      id: "makanan",
+      label: "Makanan",
+      icon: IconBowl,
+      desc: "Nasi, mie, lauk & seafood",
+    },
+    {
+      id: "minuman",
+      label: "Minuman",
+      icon: IconCup,
+      desc: "Kopi, teh, jus & alkohol",
+    },
+    {
+      id: "lainnya",
+      label: "Lainnya",
+      icon: IconPackages,
+      desc: "Rokok & kebutuhan lain",
+    },
+  ];
 
   return (
     <main
@@ -153,11 +229,11 @@ export default function MenuPage() {
         </div>
         <button
           type="button"
-          aria-label="Cari"
-          onClick={() => searchRef.current?.focus()}
+          aria-label="Buka menu"
+          onClick={() => setDrawerOpen(true)}
           className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#f48048]/40 bg-[#18181e] transition hover:bg-[#1f1f27]"
         >
-          <IconSearch size={20} className="text-white" />
+          <IconMenu2 size={20} className="text-white" />
         </button>
       </header>
 
@@ -184,6 +260,26 @@ export default function MenuPage() {
           )}
         </div>
       </div>
+
+      {/* ACTIVE TYPE LABEL */}
+      {activeType !== "all" && (
+        <div className="flex items-center gap-2 px-6 pb-3">
+          <span className="text-xs font-bold uppercase tracking-wide text-orange-500">
+            {menuGroups.find((g) => g.id === activeType)?.label}
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              setActiveType("all");
+              setActiveCategory("All");
+            }}
+            className="flex items-center gap-1 rounded-full bg-[#18181e] px-2.5 py-1 text-[11px] text-zinc-400 transition hover:text-white"
+          >
+            <IconChevronLeft size={12} />
+            Semua Kategori
+          </button>
+        </div>
+      )}
 
       {/* CATEGORIES CAROUSEL */}
       <div className="no-scrollbar flex gap-2 overflow-x-auto px-6 pb-4">
@@ -324,6 +420,78 @@ export default function MenuPage() {
                 <IconChevronRight size={18} className="text-white" />
               </div>
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* DRAWER HAMBURGER MENU */}
+      {drawerOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+          onClick={() => setDrawerOpen(false)}
+        >
+          <div
+            className="absolute right-0 top-0 flex h-full w-[300px] max-w-[85%] animate-slide-left flex-col border-l border-[#f48048]/40 bg-[#121216] p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-orange-500">
+                  Rooftop Fourtyfive.
+                </p>
+                <h2 className="text-lg font-bold text-white">Menu Categories</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(false)}
+                aria-label="Tutup"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2a2a2a] text-[#aaaaaa] transition hover:text-white"
+              >
+                <IconX size={16} />
+              </button>
+            </div>
+
+            <div className="flex-1 space-y-2">
+              {menuGroups.map((group) => {
+                const GroupIcon = group.icon;
+                const active = activeType === group.id;
+                return (
+                  <button
+                    key={group.id}
+                    type="button"
+                    onClick={() => selectType(group.id)}
+                    className={`flex w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-left transition ${
+                      active
+                        ? "border-orange-500 bg-orange-500/15"
+                        : "border-[#f48048]/40 bg-[#18181e] hover:bg-[#1f1f27]"
+                    }`}
+                  >
+                    <GroupIcon
+                      size={22}
+                      className={active ? "shrink-0 text-orange-500" : "shrink-0 text-orange-500"}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className={`text-sm font-bold ${active ? "text-orange-500" : "text-white"}`}>
+                        {group.label}
+                      </p>
+                      <p className="truncate text-[11px] text-zinc-400">{group.desc}</p>
+                    </div>
+                    <IconChevronRight size={16} className="shrink-0 text-zinc-500" />
+                  </button>
+                );
+              })}
+            </div>
+
+            {activeType !== "all" && (
+              <button
+                type="button"
+                onClick={() => selectType("all")}
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-[#f48048]/40 bg-[#18181e] px-4 py-3 text-sm font-semibold text-zinc-300 transition hover:text-white"
+              >
+                <IconCategory size={16} />
+                Tampilkan Semua
+              </button>
+            )}
           </div>
         </div>
       )}
