@@ -213,25 +213,24 @@ export default function HomePage() {
         </a>
       </section>
 
-      {/* FOOTER - absolute bottom 87px */}
-      <footer
-        className="absolute bottom-[87px] left-1/2 z-10 flex aspect-[6.852/1] h-[54px] w-[370px] max-w-full -translate-x-1/2 items-start justify-center bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url(https://api.builder.io/api/v1/image/assets/TEMP/b655ed62c1373498a7ecd39c12cbed09f7878830?placeholderIfAbsent=true)",
-        }}
-      >
-        <div className="relative mt-[-30px] flex min-h-[60px] flex-col items-center gap-0.5">
-          <p className="text-[10px] font-bold tracking-wide text-white/90">
-            Open Daily: 4:00 PM — 2:00 AM
-          </p>
-          <p className="text-[9px] font-medium text-white/70">
-            45th Floor, Metropolis Tower Plaza
-          </p>
-          <p className="mt-0.5 text-[9px] font-semibold tracking-wide text-white/80">
-            Designed by <span className="font-bold text-white">Rooftop FortyFive</span>
-          </p>
-        </div>
+      {/* FOOTER */}
+      <footer className="relative mt-[18px] h-[80px] w-full items-start justify-start">
+        {/* Landing footer strip */}
+        <div
+          className="absolute left-1/2 top-2 h-[54px] w-[370px] max-w-full -translate-x-1/2 bg-contain bg-center bg-no-repeat"
+          style={{
+            backgroundImage:
+              "url(https://api.builder.io/api/v1/image/assets/TEMP/b655ed62c1373498a7ecd39c12cbed09f7878830?placeholderIfAbsent=true)",
+          }}
+        />
+        {/* Hours block (jam & alamat tertanam di gambar) */}
+        <div
+          className="absolute bottom-[-45px] left-1/2 h-[111px] w-[402px] max-w-full -translate-x-1/2 bg-contain bg-center bg-no-repeat"
+          style={{
+            backgroundImage:
+              "url(https://api.builder.io/api/v1/image/assets/TEMP/2a37b385500c61a441dfc36c0903a0e56b9868c5?placeholderIfAbsent=true)",
+          }}
+        />
       </footer>
 
       {/* MODALS */}
