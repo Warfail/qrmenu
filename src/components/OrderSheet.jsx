@@ -91,57 +91,75 @@ export default function OrderSheet({
 
           {/* Items */}
           <div className="max-h-[45vh] space-y-3 overflow-y-auto pr-1">
-            {cartItems.map(({ product, qty }) => (
-              <div
-                key={product.id}
-                className="rounded-2xl border border-[#f48048]/40 bg-[#18181e] p-3.5"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <p className="min-w-0 flex-1 text-sm font-semibold text-white">
-                    {product.name}
-                  </p>
-                  <p className="shrink-0 text-sm font-bold text-orange-500">
-                    {formatIDR(product.price * qty)}
-                  </p>
-                </div>
-                {product.code && (
-                  <p className="mt-0.5 text-[11px] text-zinc-500">
-                    {product.code}
-                  </p>
-                )}
-                <div className="mt-3 flex items-center justify-between">
-                  <div className="flex items-center gap-2 rounded-lg border border-orange-500 bg-[#22222b] px-2.5 py-1.5">
+            {cartItems.map(({ product, variant, qty }) => {
+              const displayName = variant
+                ? product.name.replace(/ (Hot|Ice)$/, "")
+                : product.name;
+              return (
+                <div
+                  key={product.id}
+                  className="rounded-2xl border border-[#f48048]/40 bg-[#18181e] p-3.5"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-white">
+                        {displayName}
+                      </p>
+                      {variant && (
+                        <span
+                          className={`mt-1 inline-block rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${
+                            variant === "HOT"
+                              ? "bg-orange-500/15 text-orange-500"
+                              : "bg-blue-500/15 text-blue-400"
+                          }`}
+                        >
+                          {variant === "HOT" ? "Hot" : "Ice"}
+                        </span>
+                      )}
+                    </div>
+                    <p className="shrink-0 text-sm font-bold text-orange-500">
+                      {formatIDR(product.price * qty)}
+                    </p>
+                  </div>
+                  {product.code && (
+                    <p className="mt-0.5 text-[11px] text-zinc-500">
+                      {product.code}
+                    </p>
+                  )}
+                  <div className="mt-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2 rounded-lg border border-orange-500 bg-[#22222b] px-2.5 py-1.5">
+                      <button
+                        type="button"
+                        aria-label="Kurangi"
+                        onClick={() => onRemove(product.id)}
+                        className="text-white transition hover:text-orange-500"
+                      >
+                        <IconMinus size={14} />
+                      </button>
+                      <span className="min-w-[16px] text-center text-[13px] font-bold text-white">
+                        {qty}
+                      </span>
+                      <button
+                        type="button"
+                        aria-label="Tambah"
+                        onClick={() => onAdd(product)}
+                        className="text-orange-500 transition hover:text-orange-400"
+                      >
+                        <IconPlus size={14} />
+                      </button>
+                    </div>
                     <button
                       type="button"
-                      aria-label="Kurangi"
                       onClick={() => onRemove(product.id)}
-                      className="text-white transition hover:text-orange-500"
+                      className="flex items-center gap-1 text-[11px] text-zinc-500 transition hover:text-red-400"
                     >
-                      <IconMinus size={14} />
-                    </button>
-                    <span className="min-w-[16px] text-center text-[13px] font-bold text-white">
-                      {qty}
-                    </span>
-                    <button
-                      type="button"
-                      aria-label="Tambah"
-                      onClick={() => onAdd(product)}
-                      className="text-orange-500 transition hover:text-orange-400"
-                    >
-                      <IconPlus size={14} />
+                      <IconTrash size={13} />
+                      Remove
                     </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => onRemove(product.id)}
-                    className="flex items-center gap-1 text-[11px] text-zinc-500 transition hover:text-red-400"
-                  >
-                    <IconTrash size={13} />
-                    Remove
-                  </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           {/* Total */}
@@ -194,20 +212,30 @@ export default function OrderSheet({
           </div>
 
           <div className="space-y-2">
-            {cartItems.map(({ product, qty }) => (
-              <div
-                key={product.id}
-                className="flex items-start justify-between gap-2 text-[13px]"
-              >
-                <p className="min-w-0 flex-1 text-zinc-300">
-                  {product.name}{" "}
-                  <span className="text-zinc-500">×{qty}</span>
-                </p>
-                <p className="shrink-0 text-zinc-300">
-                  {formatIDR(product.price * qty)}
-                </p>
-              </div>
-            ))}
+            {cartItems.map(({ product, variant, qty }) => {
+              const displayName = variant
+                ? product.name.replace(/ (Hot|Ice)$/, "")
+                : product.name;
+              return (
+                <div
+                  key={product.id}
+                  className="flex items-start justify-between gap-2 text-[13px]"
+                >
+                  <p className="min-w-0 flex-1 text-zinc-300">
+                    {displayName}
+                    {variant && (
+                      <span className="text-[10px] font-semibold uppercase text-zinc-500">
+                        {" "}· {variant === "HOT" ? "Hot" : "Ice"}
+                      </span>
+                    )}{" "}
+                    <span className="text-zinc-500">×{qty}</span>
+                  </p>
+                  <p className="shrink-0 text-zinc-300">
+                    {formatIDR(product.price * qty)}
+                  </p>
+                </div>
+              );
+            })}
           </div>
 
           <div className="my-3 border-t border-dashed border-[#f48048]/40" />

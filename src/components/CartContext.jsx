@@ -14,6 +14,13 @@ const CART_STORAGE_KEY = "rooftop45_cart";
 
 const CartContext = createContext(null);
 
+// Ambil varian HOT/ICE dari nama produk
+function getVariant(name) {
+  if (name.endsWith(" Hot")) return "HOT";
+  if (name.endsWith(" Ice")) return "ICE";
+  return null;
+}
+
 export function CartProvider({ children }) {
   const [cart, setCart] = useState({});
   const [restoredCount, setRestoredCount] = useState(0);
@@ -31,15 +38,17 @@ export function CartProvider({ children }) {
           let count = 0;
           for (const [id, item] of Object.entries(parsed)) {
             if (item && item.product && item.product.id && item.qty > 0) {
+              const name = item.product.name || "";
               cleaned[id] = {
                 product: {
                   id: item.product.id,
-                  name: item.product.name || "",
+                  name,
                   category: item.product.category || "",
                   code: item.product.code || "",
                   price: Number(item.product.price) || 0,
                   stock: Number(item.product.stock) || 0,
                 },
+                variant: item.variant || getVariant(name),
                 qty: item.qty,
               };
               count += item.qty;
@@ -80,6 +89,7 @@ export function CartProvider({ children }) {
         ...prev,
         [product.id]: {
           product,
+          variant: getVariant(product.name),
           qty: existing ? existing.qty + 1 : 1,
         },
       };

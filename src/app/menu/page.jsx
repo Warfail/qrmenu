@@ -8,6 +8,7 @@ import {
   IconPlus,
   IconMinus,
   IconChevronRight,
+  IconChevronDown,
   IconMenu2,
   IconX,
 } from "@tabler/icons-react";
@@ -43,6 +44,39 @@ const CATEGORY_ORDER = [
 const BG_IMAGE =
   "https://api.builder.io/api/v1/image/assets/TEMP/979e074464d8e4c44b55b3a495ff275e80e38426?placeholderIfAbsent=true";
 
+// Grup sidebar (Tree/Accordion)
+const SIDEBAR_GROUPS = [
+  {
+    id: "foods",
+    label: "Makanan",
+    categories: [
+      "CARBOHYDRATE BOOSTERS",
+      "HEAVYWEIGHT CHAMPIONS",
+      "THE MARINE TOURNAMENT",
+      "TACTICAL RECHARGE & RECOVERY",
+      "HALF-TIME BITES & SNACK LEAGUE",
+      "THE ADDITIONAL PLAYERS",
+    ],
+  },
+  {
+    id: "drinks",
+    label: "Minuman",
+    categories: [
+      "CAFFEINE INJECTORS",
+      "CLUTCH PERFORMANCE",
+      "ENDURANCE LAB & HYPERDRIVE",
+      "FLUID HYDRATION & REFRESHER",
+      "POST-MATCH HEALING",
+      "THE CELEBRATION",
+    ],
+  },
+  {
+    id: "others",
+    label: "Rokok & Add-ons",
+    categories: ["Rokok"],
+  },
+];
+
 // Ambil varian HOT/ICE dari nama produk (karena API hanya mengembalikan field dasar)
 function getVariant(name) {
   if (name.endsWith(" Hot")) return "HOT";
@@ -61,6 +95,7 @@ export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [showOrder, setShowOrder] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [expandedGroups, setExpandedGroups] = useState({});
   const [productCounts, setProductCounts] = useState({});
 
   const searchRef = useRef(null);
@@ -157,6 +192,15 @@ export default function MenuPage() {
     setSidebarOpen(false);
     // Setelah filter, scroll ke atas daftar
     setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 50);
+  }
+
+  // Expand/collapse grup - hanya satu grup yang terbuka dalam satu waktu
+  function toggleGroup(id) {
+    setExpandedGroups((prev) => {
+      const next = {};
+      if (!prev[id]) next[id] = true;
+      return next;
+    });
   }
 
   return (
@@ -359,14 +403,14 @@ export default function MenuPage() {
         </div>
       )}
 
-      {/* SIDEBAR HAMBURGER (dari kiri) */}
+      {/* SIDEBAR HAMBURGER (dari kanan, tree accordion) */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
           onClick={() => setSidebarOpen(false)}
         >
           <div
-            className="absolute left-0 top-0 flex h-full w-[300px] max-w-[85%] animate-slide-right flex-col border-r border-[#2a2a35] bg-[#121216] p-6"
+            className="absolute right-0 top-0 flex h-full w-[280px] max-w-[85%] animate-slide-left flex-col border-l border-[#2a2a35] bg-[#18181e] p-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-6 flex items-center justify-between">
@@ -387,13 +431,14 @@ export default function MenuPage() {
             </div>
 
             <div className="flex-1 space-y-1.5 overflow-y-auto">
+              {/* ALL button */}
               <button
                 type="button"
                 onClick={() => selectCategory("ALL")}
                 className={`flex w-full items-center justify-between rounded-xl border px-4 py-2.5 text-left transition ${
                   activeCategory === "ALL"
                     ? "border-orange-500 bg-orange-500/15 text-orange-500"
-                    : "border-[#2a2a35] bg-[#18181e] text-white hover:bg-[#1f1f27]"
+                    : "border-[#2a2a35] bg-[#121216] text-white hover:bg-[#2a2a2a]"
                 }`}
               >
                 <span className="text-sm font-bold">ALL / Semua</span>
@@ -402,29 +447,53 @@ export default function MenuPage() {
                 </span>
               </button>
 
-              {visibleCategories.map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => selectCategory(cat)}
-                  className={`flex w-full items-center justify-between gap-2 rounded-xl border px-4 py-2.5 text-left transition ${
-                    activeCategory === cat
-                      ? "border-orange-500 bg-orange-500/15"
-                      : "border-[#2a2a35] bg-[#18181e] hover:bg-[#1f1f27]"
-                  }`}
-                >
-                  <span
-                    className={`truncate text-sm font-semibold ${
-                      activeCategory === cat ? "text-orange-500" : "text-white"
-                    }`}
-                  >
-                    {cat}
-                  </span>
-                  <span className="shrink-0 text-[11px] text-zinc-500">
-                    {productCounts[cat] ?? 0}
-                  </span>
-                </button>
-              ))}
+              {/* Tree accordion groups */}
+              {SIDEBAR_GROUPS.map((group) => {
+                const isOpen = !!expandedGroups[group.id];
+                return (
+                  <div key={group.id} className="overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => toggleGroup(group.id)}
+                      className="flex w-full items-center justify-between gap-2 rounded-xl border border-[#2a2a35] bg-[#121216] px-4 py-2.5 text-left transition hover:bg-[#2a2a2a]"
+                    >
+                      <span className="truncate text-[14px] font-bold text-zinc-300">
+                        {group.label}
+                      </span>
+                      <IconChevronDown
+                        size={16}
+                        className={`shrink-0 text-zinc-400 transition-transform duration-200 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {isOpen && (
+                      <div className="ml-3 mt-1 space-y-0.5 border-l border-[#2a2a35] pl-3">
+                        {group.categories
+                          .filter((c) => (productCounts[c] ?? 0) > 0)
+                          .map((cat) => (
+                            <button
+                              key={cat}
+                              type="button"
+                              onClick={() => selectCategory(cat)}
+                              className={`flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-[13px] transition hover:bg-[#2a2a2a] ${
+                                activeCategory === cat
+                                  ? "font-semibold text-orange-500"
+                                  : "text-zinc-400"
+                              }`}
+                            >
+                              <span className="truncate">{cat}</span>
+                              <span className="shrink-0 text-[10px] text-zinc-500">
+                                {productCounts[cat] ?? 0}
+                              </span>
+                            </button>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
