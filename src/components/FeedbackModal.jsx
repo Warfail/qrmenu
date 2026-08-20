@@ -3,6 +3,8 @@
 import { useMemo, useState } from "react";
 import { IconStarFilled, IconStar, IconX, IconBrandWhatsapp } from "@tabler/icons-react";
 
+const MODAL_BG = "https://api.builder.io/api/v1/image/assets/TEMP/af998c13d41fe62b4a888656fdbb3a15d2ef4a9c?placeholderIfAbsent=true";
+
 export default function FeedbackModal({ open, onClose, whatsappNumber }) {
   const [rating, setRating] = useState(0);
   const [hover, setHover] = useState(0);
@@ -41,87 +43,109 @@ export default function FeedbackModal({ open, onClose, whatsappNumber }) {
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden p-5">
+      {/* Background hero banner (underlay) */}
       <div
-        className="relative w-full max-w-[340px] rounded-3xl bg-[#1e1e1e] p-7 shadow-[0_8px_40px_rgba(0,0,0,0.6)]"
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${MODAL_BG})` }}
+      />
+      {/* Overlay #0a0a0c opacity 0.69 */}
+      <div className="absolute inset-0" style={{ backgroundColor: "rgba(10,10,12,0.69)" }} />
+
+      {/* Modal card */}
+      <div
+        className="relative w-full max-w-[342px] rounded-none border border-white/[0.082] bg-[#161618] shadow-[0px_16px_32px_rgba(0,0,0,0.502)]"
+        style={{ padding: "28px 24px 24px" }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close button */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Tutup"
-          className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-[#2a2a2a] text-[#aaaaaa] transition hover:text-white"
+          className="absolute -right-1 -top-3 flex h-8 w-8 items-center justify-center border border-white/[0.082] bg-[#1f1f23] text-[#aaaaaa] transition hover:text-[#f3e3c7]"
+          style={{ width: 32, height: 32 }}
         >
           <IconX size={16} />
         </button>
 
-        <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#f48149]">
-          Rooftop45 Experience
-        </p>
-        <h2 className="mb-2 text-[24px] font-bold leading-tight text-[#f3e3c7]">
-          Share Your Feedback
-        </h2>
-        <p className="mb-6 text-[13px] leading-relaxed text-[#9ca3af]">
-          We highly value your opinion. Let us know how we can make your next
-          skyline visit even more perfect.
-        </p>
-
-        <form onSubmit={handleSubmit}>
-          <p className="mb-3 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">
-            Your Overall Rating
+        {/* Header */}
+        <div>
+          <p className="text-[10px] font-extrabold uppercase text-[#f48149] [letter-spacing:-0.5px]">
+            <span className="lowercase">RoofTop</span>
+            <span className="font-medium lowercase">fortyfive</span>
+            <span className="font-medium">.</span> Experience
           </p>
+          <h2 className="mt-2 text-[22px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-1.1px]">
+            Share Your Feedback
+          </h2>
+          <p className="mt-2 text-[12px] font-medium leading-[17px] text-[#f3e3c7] [letter-spacing:-0.6px]">
+            We highly value your opinion. Let us know how we can make your next
+            skyline visit even more perfect.
+          </p>
+        </div>
 
-          <div
-            className="mb-6 flex items-center justify-center gap-2"
-            onMouseLeave={() => setHover(0)}
-          >
-            {[1, 2, 3, 4, 5].map((star) => {
-              const active = (hover || rating) >= star;
-              const Icon = active ? IconStarFilled : IconStar;
-              return (
-                <button
-                  key={star}
-                  type="button"
-                  aria-label={`${star} bintang`}
-                  onClick={() => setRating(star)}
-                  onMouseEnter={() => setHover(star)}
-                >
-                  <Icon
-                    size={32}
-                    className={
-                      active
-                        ? "text-[#f48149]"
-                        : "text-[#4b4b4b] transition hover:text-[#f48149]"
-                    }
-                  />
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="mb-2 flex items-center justify-between">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#9ca3af]">
-              Feedback Message
+        {/* Rating */}
+        <form onSubmit={handleSubmit}>
+          <div className="mt-6 flex w-full flex-col items-center">
+            <p className="text-[12px] font-extrabold uppercase text-[#f3e3c7] [letter-spacing:-0.6px]">
+              Your Overall Rating
             </p>
-            <p className="text-xs text-gray-400">Optional</p>
+            <div
+              className="mt-2.5 flex items-start justify-center gap-3"
+              onMouseLeave={() => setHover(0)}
+            >
+              {[1, 2, 3, 4, 5].map((star) => {
+                const active = (hover || rating) >= star;
+                const Icon = active ? IconStarFilled : IconStar;
+                return (
+                  <button
+                    key={star}
+                    type="button"
+                    aria-label={`${star} bintang`}
+                    onClick={() => setRating(star)}
+                    onMouseEnter={() => setHover(star)}
+                  >
+                    <Icon
+                      size={28}
+                      className={
+                        active
+                          ? "text-[#f48149]"
+                          : "text-[#4b4b4b] transition hover:text-[#f48149]"
+                      }
+                    />
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
-          <textarea
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Tell us about your experience..."
-            rows={4}
-            className="mb-5 h-[100px] w-full resize-none rounded-xl bg-[#2a2a2a] p-4 text-sm text-[#f3e3c7] placeholder-gray-500 outline-none transition focus:ring-2 focus:ring-[#f48149]/50"
-          />
+          {/* Feedback message */}
+          <div className="mt-6 w-full">
+            <div className="flex w-full items-start justify-between">
+              <p className="text-[12px] font-extrabold uppercase text-[#f3e3c7] [letter-spacing:-0.6px]">
+                Feedback Message
+              </p>
+              <p className="text-[10px] font-medium text-[#f3e3c7] [letter-spacing:-0.5px]">
+                Optional
+              </p>
+            </div>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Tell us about your experience..."
+              rows={4}
+              style={{ minHeight: 120, padding: 16 }}
+              className="mt-2 w-full resize-none border border-white/[0.082] bg-[#1f1f23] text-[12px] font-medium text-[#f3e3c7] placeholder-[#f3e3c7] outline-none transition focus:border-[#f48149]/60 [letter-spacing:-0.6px]"
+            />
+          </div>
 
-          {error && <p className="mb-3 text-center text-xs text-red-400">{error}</p>}
+          {error && <p className="mt-3 text-center text-xs text-red-400">{error}</p>}
 
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#f48149] px-4 py-4 text-[17px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.85px] transition hover:brightness-110 active:scale-[0.99]"
+            className="mt-6 flex w-full items-center justify-center gap-2 bg-[#f48149] px-4 text-[17px] font-extrabold text-[#f3e3c7] transition hover:brightness-110 active:scale-[0.99] [letter-spacing:-0.85px]"
+            style={{ minHeight: 52 }}
           >
             <IconBrandWhatsapp size={20} />
             Submit Feedback
