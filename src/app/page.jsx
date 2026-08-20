@@ -174,8 +174,10 @@ export default function HomePage() {
         }}
       >
         <div className="relative flex min-h-[24px] w-full" />
-        <div className="relative mt-3 flex min-h-[34px] w-full items-start justify-center pt-5 pb-2">
-          <div className="h-[5px] w-[139px] rounded-full bg-white" />
+        <div className="relative mt-3 flex min-h-[34px] w-full items-center justify-center pt-4 pb-2">
+          <p className="text-[10px] font-semibold tracking-wide text-white/80">
+            Design by <span className="font-bold text-white">Rezky A.K</span>
+          </p>
         </div>
       </footer>
 
