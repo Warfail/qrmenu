@@ -113,7 +113,7 @@ export default function HomePage() {
 
       {/* ACTION STACK (4 tombol) */}
       <section
-        className="relative flex aspect-[0.918/1] min-h-[438px] w-full flex-col justify-start overflow-hidden bg-cover bg-center px-6 pb-[50px] pt-[50px]"
+        className="relative flex aspect-[0.918/1] min-h-[438px] w-full flex-col justify-start overflow-hidden bg-cover bg-center px-6 pb-[63px] pt-[63px]"
         style={{
           backgroundImage:
             "url(https://api.builder.io/api/v1/image/assets/TEMP/d2060486470375c1ebcf57c588ab2ab994788d42?placeholderIfAbsent=true)",
