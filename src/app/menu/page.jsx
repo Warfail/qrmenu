@@ -24,67 +24,95 @@ function formatIDR(value) {
   }).format(value || 0);
 }
 
-// Urutan kategori saat tampil di "ALL"
-const CATEGORY_ORDER = [
-  "CARBOHYDRATE BOOSTERS",
-  "HEAVYWEIGHT CHAMPIONS",
-  "THE MARINE TOURNAMENT",
-  "TACTICAL RECHARGE & RECOVERY",
-  "HALF-TIME BITES & SNACK LEAGUE",
-  "THE ADDITIONAL PLAYERS",
-  "CAFFEINE INJECTORS",
-  "CLUTCH PERFORMANCE",
-  "ENDURANCE LAB & HYPERDRIVE",
-  "FLUID HYDRATION & REFRESHER",
-  "POST-MATCH HEALING",
-  "THE CELEBRATION",
-  "Rokok",
+// Urutan tampilan kategori (display) saat "ALL"
+const DISPLAY_ORDER = [
+  "COFFEE",
+  "NON-COFFEE",
+  "JUICE & MOCKTAIL",
+  "BEER & COCKTAIL",
+  "MAIN COURSE",
+  "NOODLES & SOUP",
+  "SEAFOOD",
+  "SNACKS & SIDES",
+  "ROKOK & ADD-ONS",
 ];
-
-const BG_IMAGE =
-  "https://api.builder.io/api/v1/image/assets/TEMP/979e074464d8e4c44b55b3a495ff275e80e38426?placeholderIfAbsent=true";
 
 // Grup sidebar (Tree/Accordion)
 const SIDEBAR_GROUPS = [
   {
+    id: "drinks",
+    label: "Minuman",
+    categories: ["COFFEE", "NON-COFFEE", "JUICE & MOCKTAIL", "BEER & COCKTAIL"],
+  },
+  {
     id: "foods",
     label: "Makanan",
     categories: [
-      "CARBOHYDRATE BOOSTERS",
-      "HEAVYWEIGHT CHAMPIONS",
-      "THE MARINE TOURNAMENT",
-      "TACTICAL RECHARGE & RECOVERY",
-      "HALF-TIME BITES & SNACK LEAGUE",
-      "THE ADDITIONAL PLAYERS",
-    ],
-  },
-  {
-    id: "drinks",
-    label: "Minuman",
-    categories: [
-      "CAFFEINE INJECTORS",
-      "CLUTCH PERFORMANCE",
-      "ENDURANCE LAB & HYPERDRIVE",
-      "FLUID HYDRATION & REFRESHER",
-      "POST-MATCH HEALING",
-      "THE CELEBRATION",
+      "MAIN COURSE",
+      "NOODLES & SOUP",
+      "SEAFOOD",
+      "SNACKS & SIDES",
     ],
   },
   {
     id: "others",
     label: "Rokok & Add-ons",
-    categories: ["Rokok"],
+    categories: ["ROKOK & ADD-ONS"],
   },
 ];
 
+const BG_IMAGE =
+  "https://api.builder.io/api/v1/image/assets/TEMP/979e074464d8e4c44b55b3a495ff275e80e38426?placeholderIfAbsent=true";
+
 // Nama dasar tanpa suffix varian
 function baseName(name) {
-  return name.replace(/ Hot$/, "").replace(/ Ice$/, "");
+  return String(name || "").replace(/ Hot$/, "").replace(/ Ice$/, "");
 }
 
 // Apakah nama produk mengandung varian HOT/ICE
 function hasVariantName(name) {
   return name.endsWith(" Hot") || name.endsWith(" Ice");
+}
+
+// Item mie (bakmi/kwetiau/bihun) dari CARBOHYDRATE BOOSTERS
+function isNoodle(name) {
+  return /^(Bakmi|Kwetiau|Bihun)/i.test(name);
+}
+
+// Mapping category DB -> display category (frontend only, DB tidak diubah)
+function getDisplayCategory(item) {
+  const cat = item.category;
+  const name = baseName(item.name);
+  switch (cat) {
+    case "CAFFEINE INJECTORS":
+    case "CLUTCH PERFORMANCE":
+      return "COFFEE";
+    case "ENDURANCE LAB & HYPERDRIVE":
+      return "NON-COFFEE";
+    case "POST-MATCH HEALING":
+      // Kecuali Ice Cream → pindah ke SNACKS & SIDES
+      return /ice ?cream/i.test(name) ? "SNACKS & SIDES" : "NON-COFFEE";
+    case "FLUID HYDRATION & REFRESHER":
+      return "JUICE & MOCKTAIL";
+    case "THE CELEBRATION":
+      return "BEER & COCKTAIL";
+    case "HEAVYWEIGHT CHAMPIONS":
+      return "MAIN COURSE";
+    case "CARBOHYDRATE BOOSTERS":
+      // Kecuali bakmi/kwetiau/bihun → NOODLES & SOUP
+      return isNoodle(name) ? "NOODLES & SOUP" : "MAIN COURSE";
+    case "TACTICAL RECHARGE & RECOVERY":
+      return "NOODLES & SOUP";
+    case "THE MARINE TOURNAMENT":
+      return "SEAFOOD";
+    case "HALF-TIME BITES & SNACK LEAGUE":
+      return "SNACKS & SIDES";
+    case "Rokok":
+    case "THE ADDITIONAL PLAYERS":
+      return "ROKOK & ADD-ONS";
+    default:
+      return cat || "LAINNYA";
+  }
 }
 
 export default function MenuPage() {
@@ -111,17 +139,9 @@ export default function MenuPage() {
       fetch("/api/products").then((r) => (r.ok ? r.json() : { products: [] })),
       fetch("/api/categories").then((r) => (r.ok ? r.json() : { categories: [] })),
     ])
-      .then(([prodJson, catJson]) => {
+      .then(([prodJson]) => {
         if (!active) return;
-        const prods = prodJson.products || [];
-        const cats = catJson.categories || [];
-        setAllProducts(prods);
-
-        const counts = {};
-        cats.forEach((c) => {
-          counts[c.name] = prods.filter((p) => p.category === c.name).length;
-        });
-        setProductCounts(counts);
+        setAllProducts(prodJson.products || []);
       })
       .catch((err) => {
         if (active) setError(err.message || "Terjadi kesalahan.");
@@ -134,26 +154,31 @@ export default function MenuPage() {
     };
   }, []);
 
-  // Kelompokkan produk per kategori: gabung varian Hot/Ice jadi satu item (nama dasar)
-  const groupedByCategory = useMemo(() => {
+  // Kelompokkan produk per DISPLAY category: gabung varian Hot/Ice jadi satu item (nama dasar)
+  const groupedByDisplay = useMemo(() => {
     const groups = {};
+    const counts = {};
     for (const p of allProducts) {
-      const cat = p.category;
+      const display = getDisplayCategory(p);
       const base = baseName(p.name);
       const isHot = p.name.endsWith(" Hot");
       const isIce = p.name.endsWith(" Ice");
-      if (!groups[cat]) groups[cat] = new Map();
-      if (!groups[cat].has(base)) {
-        groups[cat].set(base, {
-          id: `${cat}::${base}`, // key stabil untuk cart (bukan id produk varian)
+      if (!groups[display]) {
+        groups[display] = new Map();
+        counts[display] = 0;
+      }
+      if (!groups[display].has(base)) {
+        groups[display].set(base, {
+          id: `${display}::${base}`, // key stabil untuk cart
           name: base,
-          category: cat,
+          category: p.category,
           code: p.code ? p.code.replace(/-(HOT|ICE)$/, "") : "",
           price: p.price,
           variants: null, // null = tanpa varian
         });
+        counts[display]++;
       }
-      const item = groups[cat].get(base);
+      const item = groups[display].get(base);
       if (isHot || isIce) {
         item.variants = item.variants || {};
         item.variants[isHot ? "HOT" : "ICE"] = {
@@ -165,36 +190,41 @@ export default function MenuPage() {
         item.variants = null;
       }
     }
+    setProductCounts(counts);
     const out = {};
-    for (const [cat, map] of Object.entries(groups)) {
-      out[cat] = [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
+    for (const [display, map] of Object.entries(groups)) {
+      out[display] = [...map.values()].sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
     }
     return out;
   }, [allProducts]);
 
-  // Kategori yang tampil (urut sesuai CATEGORY_ORDER)
+  // Kategori yang tampil (urut sesuai DISPLAY_ORDER)
   const visibleCategories = useMemo(
-    () => CATEGORY_ORDER.filter((c) => (groupedByCategory[c]?.length ?? 0) > 0),
-    [groupedByCategory]
+    () => DISPLAY_ORDER.filter((c) => (groupedByDisplay[c]?.length ?? 0) > 0),
+    [groupedByDisplay]
   );
 
   // Filter hasil berdasarkan search (client-side)
   const filteredGroups = useMemo(() => {
     const q = search.trim().toLowerCase();
-    if (!q) return groupedByCategory;
+    if (!q) return groupedByDisplay;
     const out = {};
-    for (const [cat, items] of Object.entries(groupedByCategory)) {
+    for (const [cat, items] of Object.entries(groupedByDisplay)) {
       const matched = items.filter((p) => p.name.toLowerCase().includes(q));
       if (matched.length) out[cat] = matched;
     }
     return out;
-  }, [groupedByCategory, search]);
+  }, [groupedByDisplay, search]);
 
   const shownCategories = useMemo(() => {
     if (activeCategory === "ALL") {
       return visibleCategories.filter((c) => (filteredGroups[c]?.length ?? 0) > 0);
     }
-    return (filteredGroups[activeCategory]?.length ?? 0) > 0 ? [activeCategory] : [];
+    return (filteredGroups[activeCategory]?.length ?? 0) > 0
+      ? [activeCategory]
+      : [];
   }, [activeCategory, visibleCategories, filteredGroups]);
 
   const cartCount = useMemo(
@@ -203,7 +233,10 @@ export default function MenuPage() {
   );
   const cartTotal = useMemo(
     () =>
-      Object.values(cart).reduce((sum, item) => sum + item.qty * item.product.price, 0),
+      Object.values(cart).reduce(
+        (sum, item) => sum + item.qty * item.product.price,
+        0
+      ),
     [cart]
   );
 
@@ -307,16 +340,14 @@ export default function MenuPage() {
             {search ? "Produk tidak ditemukan" : "Belum ada produk"}
           </p>
           <p className="mt-1 text-xs text-zinc-500">
-            {search
-              ? "Coba kata kunci lain."
-              : "Tidak ada item di kategori ini."}
+            {search ? "Coba kata kunci lain." : "Tidak ada item di kategori ini."}
           </p>
         </div>
       ) : (
         <div className="space-y-8 px-6">
           {shownCategories.map((cat) => (
             <section key={cat} ref={(el) => (sectionRefs.current[cat] = el)}>
-              {/* Category Header */}
+              {/* Category Header (display name) */}
               <div className="mb-3 flex items-center justify-between border-b border-[#2a2a35] pb-2">
                 <h2 className="text-[15px] font-bold uppercase tracking-wide text-orange-500">
                   {cat}
