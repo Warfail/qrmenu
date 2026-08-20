@@ -11,9 +11,7 @@ import {
   IconUsers,
   IconBrandWhatsapp,
   IconCopy,
-  IconBrandFacebook,
-  IconBrandInstagram,
-  IconBrandTiktok,
+  IconX,
 } from "@tabler/icons-react";
 import FeedbackModal from "@/components/FeedbackModal";
 import GuestRatingsModal from "@/components/GuestRatingsModal";
@@ -44,19 +42,19 @@ export default function HomePage() {
     {
       id: "fb",
       label: "Facebook",
-      icon: IconBrandFacebook,
+      iconUrl: "https://cdn.simpleicons.org/facebook",
       href: "https://www.facebook.com/share/19A6JojNt5/",
     },
     {
       id: "ig",
       label: "Instagram",
-      icon: IconBrandInstagram,
+      iconUrl: "https://cdn.simpleicons.org/instagram",
       href: "https://www.instagram.com/rooftopfortyfive_salatiga?igsh=MTRzM2w2dDRmZ2hwZA==&igsi=MTRzM2w2dDRmZ2hwZA==",
     },
     {
       id: "tiktok",
       label: "TikTok",
-      icon: IconBrandTiktok,
+      iconUrl: "https://cdn.simpleicons.org/tiktok",
       href: "https://www.tiktok.com/@rooftop45_?_r=1&_t=ZS-992nkx9TvvD",
     },
   ];
@@ -238,27 +236,63 @@ export default function HomePage() {
             <IconCopy size={18} className="text-[#f3e3c7]" />
           </button>
 
-          {showSocialMenu && (
-            <div className="mt-2 flex w-full flex-col gap-1.5 rounded-2xl border border-white/[0.082] bg-[#161618] p-2">
-              {SOCIAL_LINKS.map((s) => {
-                const Icon = s.icon;
-                return (
-                  <a
-                    key={s.id}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[17px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.85px] transition hover:bg-white/[0.06]"
-                  >
-                    <Icon size={20} className="shrink-0 text-[#f48149]" />
-                    {s.label}
-                  </a>
-                );
-              })}
-            </div>
-          )}
         </div>
       </section>
+
+      {/* SOCIAL MEDIA MODAL */}
+      {showSocialMenu && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden p-5"
+          onClick={() => setShowSocialMenu(false)}
+        >
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div
+            className="relative w-full max-w-[342px] border border-white/[0.082] bg-[#161618] p-6 shadow-[0px_16px_32px_rgba(0,0,0,0.502)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[10px] font-extrabold uppercase text-[#f48149] [letter-spacing:-0.5px]">
+                  Our Social Media
+                </p>
+                <h3 className="mt-1 text-[22px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-1.1px]">
+                  Stay in Touch
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowSocialMenu(false)}
+                aria-label="Tutup"
+                className="flex h-8 w-8 items-center justify-center border border-white/[0.082] bg-[#1f1f23] text-[#aaaaaa] transition hover:text-[#f3e3c7]"
+              >
+                <IconX size={16} />
+              </button>
+            </div>
+
+            <div className="mt-5 flex flex-col gap-2">
+              {SOCIAL_LINKS.map((s) => (
+                <a
+                  key={s.id}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex w-full items-center gap-3 rounded-xl border border-white/[0.082] bg-[#1f1f23] px-4 py-3 text-[17px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.85px] transition hover:bg-white/[0.06]"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={s.iconUrl}
+                    alt={s.label}
+                    width={20}
+                    height={20}
+                    className="h-5 w-5 shrink-0 object-contain"
+                  />
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* FOOTER */}
       <footer className="mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4">
