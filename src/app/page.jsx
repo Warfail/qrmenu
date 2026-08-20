@@ -330,8 +330,8 @@ export default function HomePage() {
         <div
           className="absolute"
           style={{
-            right: "18px",
-            top: 0,
+            right: "34px",
+            top: "-8px",
             transform: "translateY(-50%)",
             width: 48,
             height: 48,
