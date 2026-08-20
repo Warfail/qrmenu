@@ -96,8 +96,8 @@ export default function HomePage() {
           {/* Status bar */}
           <div className="absolute left-0 right-0 top-0 z-10 flex min-h-[44px] w-full" />
 
-          {/* Brand - kiri atas */}
-          <div className="absolute left-[25px] top-[80px] z-10 flex items-start">
+          {/* Brand - kiri atas (posisi navbar, tidak tabrakan dengan tagline) */}
+          <div className="absolute left-[25px] top-[52px] z-10 flex h-[44px] items-start">
             <span className="text-[16px] font-extrabold leading-[1.2] tracking-[-0.8px] text-[#f48149]">
               rooftop<span className="font-medium">fortyfive.</span>
             </span>
