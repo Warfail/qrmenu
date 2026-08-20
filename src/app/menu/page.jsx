@@ -7,6 +7,7 @@ import {
   IconSearch,
   IconPlus,
   IconMinus,
+  IconChevronLeft,
   IconChevronRight,
   IconChevronDown,
   IconMenu2,
@@ -87,6 +88,8 @@ function hasVariantName(name) {
   return name.endsWith(" Hot") || name.endsWith(" Ice");
 }
 
+const PAGE_SIZE = 15;
+
 export default function MenuPage() {
   const router = useRouter();
   const { cart, addToCart, removeFromCart, setVariant, clearCart } = useCart();
@@ -100,6 +103,7 @@ export default function MenuPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState({});
   const [productCounts, setProductCounts] = useState({});
+  const [page, setPage] = useState(0);
 
   const searchRef = useRef(null);
   const sectionRefs = useRef({});
@@ -218,9 +222,30 @@ export default function MenuPage() {
   function selectCategory(name) {
     setActiveCategory(name);
     setSidebarOpen(false);
+    setPage(0);
     // Setelah filter, scroll ke atas daftar
     setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 50);
   }
+
+  // Flatten produk yang tampil (semua kategori), lalu slice per halaman
+  const flatItems = useMemo(() => {
+    const items = [];
+    for (const cat of shownCategories) {
+      for (const p of filteredGroups[cat] || []) {
+        items.push({ ...p, _cat: cat });
+      }
+    }
+    return items;
+  }, [shownCategories, filteredGroups]);
+
+  const totalPages = Math.max(1, Math.ceil(flatItems.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages - 1);
+  const pageItems = flatItems.slice(safePage * PAGE_SIZE, (safePage + 1) * PAGE_SIZE);
+
+  // Reset page saat search berubah
+  useEffect(() => {
+    setPage(0);
+  }, [search, activeCategory]);
 
   // Expand/collapse grup - hanya satu grup yang terbuka dalam satu waktu
   function toggleGroup(id) {
@@ -313,76 +338,107 @@ export default function MenuPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-8 px-6">
-          {shownCategories.map((cat) => (
-            <section key={cat} ref={(el) => (sectionRefs.current[cat] = el)}>
-              {/* Category Header */}
-              <div className="mb-3 flex items-center justify-between border-b border-[#2a2a35] pb-2">
-                <h2 className="text-[15px] font-bold uppercase tracking-wide text-orange-500">
-                  {cat}
-                </h2>
-                <span className="text-[11px] text-zinc-500">
-                  {productCounts[cat] ?? filteredGroups[cat]?.length ?? 0} items
-                </span>
-              </div>
-
-              {/* Items */}
-              <div className="space-y-2.5">
-                {filteredGroups[cat].map((product) => {
-                  const inCart = cart[product.id];
-                  return (
-                    <div
-                      key={product.id}
-                      className="flex w-full items-center gap-3 rounded-2xl border border-[#2a2a35] bg-[#18181e] px-3.5 py-3"
-                    >
-                      <div className="flex min-w-0 flex-1 flex-col">
-                        <p className="min-w-0 truncate text-[14px] font-semibold text-white">
-                          {product.name}
-                        </p>
-                        <div className="mt-1 flex w-full items-center justify-between gap-3">
-                          <p className="text-[15px] font-bold text-orange-500">
-                            {formatIDR(product.price)}
-                          </p>
-                          {inCart && inCart.qty > 0 ? (
-                            <div className="flex items-center gap-2 rounded-lg border border-orange-500 bg-[#22222b] px-2.5 py-1.5">
-                              <button
-                                type="button"
-                                aria-label="Kurangi"
-                                onClick={() => removeFromCart(product.id)}
-                                className="text-white transition hover:text-orange-500"
-                              >
-                                <IconMinus size={14} />
-                              </button>
-                              <span className="min-w-[16px] text-center text-[13px] font-bold text-white">
-                                {inCart.qty}
-                              </span>
-                              <button
-                                type="button"
-                                aria-label="Tambah"
-                                onClick={() => addToCart(product)}
-                                className="text-orange-500 transition hover:text-orange-400"
-                              >
-                                <IconPlus size={14} />
-                              </button>
-                            </div>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={() => addToCart(product)}
-                              className="flex items-center gap-1 rounded-lg border border-orange-500 bg-[#22222b] px-3 py-1.5 text-[12px] font-bold text-white transition hover:bg-orange-500/20"
-                            >
-                              <IconPlus size={12} />
-                              ADD
-                            </button>
-                          )}
-                        </div>
-                      </div>
+        <div className="space-y-6 px-6">
+          {/* Items paginated */}
+          <div className="space-y-2.5">
+            {pageItems.map((product) => {
+              const inCart = cart[product.id];
+              return (
+                <div
+                  key={product.id}
+                  className="flex w-full items-center gap-3 rounded-2xl border border-[#2a2a35] bg-[#18181e] px-3.5 py-3"
+                >
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <div className="flex items-center gap-2">
+                      <p className="min-w-0 truncate text-[14px] font-semibold text-white">
+                        {product.name}
+                      </p>
+                      {product._cat && activeCategory === "ALL" && (
+                        <span className="shrink-0 rounded bg-[#22222b] px-1.5 py-0.5 text-[9px] uppercase tracking-wide text-zinc-500">
+                          {product._cat}
+                        </span>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
-            </section>
-          ))}
+                    <div className="mt-1 flex w-full items-center justify-between gap-3">
+                      <p className="text-[15px] font-bold text-orange-500">
+                        {formatIDR(product.price)}
+                      </p>
+                      {inCart && inCart.qty > 0 ? (
+                        <div className="flex items-center gap-2 rounded-lg border border-orange-500 bg-[#22222b] px-2.5 py-1.5">
+                          <button
+                            type="button"
+                            aria-label="Kurangi"
+                            onClick={() => removeFromCart(product.id)}
+                            className="text-white transition hover:text-orange-500"
+                          >
+                            <IconMinus size={14} />
+                          </button>
+                          <span className="min-w-[16px] text-center text-[13px] font-bold text-white">
+                            {inCart.qty}
+                          </span>
+                          <button
+                            type="button"
+                            aria-label="Tambah"
+                            onClick={() => addToCart(product)}
+                            className="text-orange-500 transition hover:text-orange-400"
+                          >
+                            <IconPlus size={14} />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => addToCart(product)}
+                          className="flex items-center gap-1 rounded-lg border border-orange-500 bg-[#22222b] px-3 py-1.5 text-[12px] font-bold text-white transition hover:bg-orange-500/20"
+                        >
+                          <IconPlus size={12} />
+                          ADD
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 pb-4 pt-2">
+              <button
+                type="button"
+                disabled={safePage === 0}
+                onClick={() => setPage(safePage - 1)}
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#2a2a35] bg-[#18181e] text-white transition hover:bg-[#1f1f27] disabled:cursor-not-allowed disabled:opacity-30"
+                aria-label="Halaman sebelumnya"
+              >
+                <IconChevronLeft size={18} />
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => setPage(i)}
+                  className={`flex h-9 min-w-[36px] items-center justify-center rounded-lg border px-2 text-sm font-bold transition ${
+                    i === safePage
+                      ? "border-orange-500 bg-orange-500 text-white"
+                      : "border-[#2a2a35] bg-[#18181e] text-zinc-400 hover:bg-[#1f1f27]"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                type="button"
+                disabled={safePage >= totalPages - 1}
+                onClick={() => setPage(safePage + 1)}
+                className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#2a2a35] bg-[#18181e] text-white transition hover:bg-[#1f1f27] disabled:cursor-not-allowed disabled:opacity-30"
+                aria-label="Halaman berikutnya"
+              >
+                <IconChevronRight size={18} />
+              </button>
+            </div>
+          )}
         </div>
       )}
 
