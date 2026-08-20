@@ -93,7 +93,7 @@ export default function HomePage() {
         </div>
 
         {/* LIVE BANNER (running text, tiap event diawali pulse indicator) */}
-        <div className="mt-[15px] flex min-h-[38px] w-full items-center overflow-hidden bg-[#f48149] px-6 py-[13px]">
+        <div className="mt-[15px] flex min-h-[38px] w-full items-center overflow-hidden bg-[#f48149] px-6 pb-[16px] pt-[13px]">
           <div className="relative w-full min-w-0 overflow-hidden">
             <div className="animate-marquee flex min-w-max whitespace-nowrap text-[10px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
               {[0, 1].map((copy) => (
@@ -113,7 +113,7 @@ export default function HomePage() {
 
       {/* ACTION STACK (4 tombol) */}
       <section
-        className="relative flex aspect-[0.918/1] min-h-[438px] w-full flex-col justify-start overflow-hidden bg-cover bg-center px-6 pb-[63px] pt-[63px]"
+        className="relative mt-[24px] flex aspect-[0.918/1] min-h-[438px] w-full flex-col justify-start overflow-hidden bg-cover bg-center px-6 pb-[63px] pt-[63px]"
         style={{
           backgroundImage:
             "url(https://api.builder.io/api/v1/image/assets/TEMP/d2060486470375c1ebcf57c588ab2ab994788d42?placeholderIfAbsent=true)",
