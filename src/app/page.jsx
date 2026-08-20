@@ -8,14 +8,15 @@ import {
   IconStar,
   IconMessageCircle,
   IconChevronRight,
-  IconMapPin,
-  IconClock,
 } from "@tabler/icons-react";
 import FeedbackModal from "@/components/FeedbackModal";
 import GuestRatingsModal from "@/components/GuestRatingsModal";
 
 const GOOGLE_MAPS_URL =
   "https://www.google.com/maps/place/Rooftop+Forty+Five/@-7.3370042,110.4879377,15z/data=!4m6!3m5!1s0x2e7a79339f145283:0x26fa97d90cd2e8d2!8m2!3d-7.3371324!4d110.4982667!16s%2Fg%2F11njpl__k4?entry=ttu&g_ep=EgoyMDI2MDgxMi4wIKXMDSoASAFQAw%3D%3D";
+
+const LIVE_BANNER_TEXT =
+  "Open 24 Hours . VIP Studio . Big Screen . High Speed Wi-fi . Live Music . City View . Portable Skate Park";
 
 export default function HomePage() {
   const [settings, setSettings] = useState({
@@ -45,16 +46,16 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col justify-between overflow-hidden bg-[#0a0a0c]">
-      {/* HERO */}
+    <main className="flex min-h-screen flex-col justify-start overflow-hidden bg-[#0a0a0c]">
+      {/* HERO BANNER */}
       <section className="relative">
-        <div className="relative flex aspect-[1.058/1] w-full flex-col justify-end overflow-hidden pb-6">
+        <div className="relative flex aspect-[1.87/1] min-h-[215px] w-full flex-col justify-end overflow-hidden pb-6">
           {/* Background image */}
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage:
-                "url(https://api.builder.io/api/v1/image/assets/TEMP/979e074464d8e4c44b55b3a495ff275e80e38426?placeholderIfAbsent=true)",
+                "url(https://api.builder.io/api/v1/image/assets/TEMP/b4f1d54010a6639f1c62ba597c092ae7fdc088e7?placeholderIfAbsent=true)",
             }}
           />
 
@@ -62,23 +63,23 @@ export default function HomePage() {
           <div className="relative z-10 flex min-h-[44px] w-full" />
         </div>
 
-        {/* LIVE BANNER */}
-        <div className="flex w-full items-center gap-3 overflow-hidden border-y border-[#f48048] bg-orange-500/20 px-3 py-3">
+        {/* LIVE BANNER (running text single line) */}
+        <div className="flex w-full items-center gap-3 overflow-hidden bg-[#f48149] px-6 py-3">
           <span className="relative flex h-2 w-2 shrink-0">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-orange-500 opacity-75" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-orange-500" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-black/70" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-black" />
           </span>
           <div className="relative min-w-0 flex-1 overflow-hidden">
-            <div className="animate-marquee flex min-w-max whitespace-nowrap text-[13px] font-bold text-white">
+            <div className="animate-marquee flex min-w-max whitespace-nowrap text-[10px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
               {[0, 1].map((copy) => (
-                <div key={copy} className="flex shrink-0 items-center">
-                  {[0, 1, 2, 3, 4].map((i) => (
+                <span key={copy} className="flex shrink-0 items-center">
+                  {[0, 1].map((i) => (
                     <span key={i} className="flex items-center">
-                      <span className="px-3">Live Musik Mulai Jam 6 Sore</span>
-                      <span className="px-1 text-orange-300">•</span>
+                      <span className="px-3">{LIVE_BANNER_TEXT}</span>
+                      <span className="px-1 text-black/70">•</span>
                     </span>
                   ))}
-                </div>
+                </span>
               ))}
             </div>
           </div>
@@ -86,50 +87,58 @@ export default function HomePage() {
       </section>
 
       {/* ACTION STACK */}
-      <section className="flex flex-col px-6 py-4">
-        <p className="text-xs font-bold uppercase tracking-wide text-zinc-400">
-          Exquisite Experiences
-        </p>
-
+      <section
+        className="relative flex aspect-[1.256/1] min-h-[320px] w-full flex-col justify-start overflow-hidden bg-cover bg-center px-6 pb-12 pt-6"
+        style={{
+          backgroundImage:
+            "url(https://api.builder.io/api/v1/image/assets/TEMP/a9bbdfaf8f7d25665566ccf9c20e8c5ca6dd3c3e?placeholderIfAbsent=true)",
+        }}
+      >
         {/* Explore Menu */}
         <Link
           href="/menu"
-          className="mt-4 flex items-center justify-between gap-4 rounded-2xl bg-orange-500 px-[18px] py-[18px] transition hover:bg-orange-600 active:scale-[0.99]"
+          className="relative flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] transition hover:brightness-110 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
-            <div className="flex h-6 w-6 items-center justify-center">
+            <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
               <IconChefHat size={24} />
             </div>
             <div>
-              <p className="text-[18px] font-bold text-white">Explore Menu</p>
-              <p className="text-xs font-medium text-white/80">
-                Fine cocktails & signature grills
+              <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
+                Explore Menu
+              </p>
+              <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
+                Find your spesc
               </p>
             </div>
           </div>
-          <IconArrowRight size={20} className="text-white" />
+          <IconArrowRight size={20} className="text-[#f3e3c7]" />
         </Link>
 
         {/* Guest Ratings */}
         <button
           type="button"
           onClick={() => setShowRatings(true)}
-          className="mt-4 flex items-center justify-between gap-4 rounded-2xl border border-[#2a2a35] bg-[#18181e] px-[18px] py-[18px] text-left transition hover:bg-[#1f1f27] active:scale-[0.99]"
+          className="relative mt-4 flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
-            <div className="flex h-6 w-6 items-center justify-center">
-              <IconStar size={24} className="text-orange-500" />
+            <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
+              <IconStar size={24} />
             </div>
             <div>
-              <p className="text-[18px] font-bold text-white">Guest Ratings</p>
-              <p className="text-xs font-medium text-zinc-400">
-                Your Ratings Support Us
+              <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
+                Guest Ratings
+              </p>
+              <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
+                Join 12,000+ happy patrons
               </p>
             </div>
           </div>
           <div className="flex items-center gap-1">
-            <span className="text-base font-bold text-white">4.9</span>
-            <IconStar size={14} className="text-orange-500" />
+            <span className="text-[17px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.85px]">
+              4.9
+            </span>
+            <IconStar size={14} className="text-[#f3e3c7]" />
           </div>
         </button>
 
@@ -137,44 +146,36 @@ export default function HomePage() {
         <button
           type="button"
           onClick={() => setShowFeedback(true)}
-          className="mt-4 flex items-center justify-between gap-4 rounded-2xl border border-[#2a2a35] bg-[#18181e] px-[18px] py-[18px] text-left transition hover:bg-[#1f1f27] active:scale-[0.99]"
+          className="relative mt-4 flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
-            <div className="flex h-6 w-6 items-center justify-center">
-              <IconMessageCircle size={24} className="text-orange-500" />
+            <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
+              <IconMessageCircle size={24} />
             </div>
             <div>
-              <p className="text-[18px] font-bold text-white">Feedbacks</p>
-              <p className="text-xs font-medium text-zinc-400">
+              <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
+                Feedbacks
+              </p>
+              <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
                 Tell us about your skyline visit
               </p>
             </div>
           </div>
-          <IconChevronRight size={16} className="text-zinc-500" />
+          <IconChevronRight size={16} className="text-[#f3e3c7]" />
         </button>
       </section>
 
       {/* FOOTER */}
-      <footer className="flex flex-col items-center pb-2 pt-5">
-        <div className="flex flex-col items-center font-bold text-zinc-400">
-          <p className="flex items-center gap-1.5 text-[13px]">
-            <IconClock size={14} className="text-orange-500" />
-            Open Everyday 24 Hour
-          </p>
-          <a
-            href={GOOGLE_MAPS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-1 flex w-full items-start justify-center gap-1.5 px-6 text-xs font-medium transition hover:text-orange-400"
-          >
-            <IconMapPin size={13} className="mt-0.5 shrink-0 text-orange-500" />
-            <span className="text-center">
-              Jl. Veteran No.13 Blok K, Mangunsari, Kota Salatiga, Jawa Tengah
-            </span>
-          </a>
-          <p className="mt-3 text-[11px] font-medium tracking-wide text-zinc-500">
-            Design by <span className="font-semibold text-zinc-300">Rezky A.K</span>
-          </p>
+      <footer
+        className="relative mt-6 flex aspect-[5.743/1] w-[402px] max-w-full flex-col items-start justify-start self-center bg-cover bg-center"
+        style={{
+          backgroundImage:
+            "url(https://api.builder.io/api/v1/image/assets/TEMP/875a9c68745b099a650878dbdef4603cc79b0286?placeholderIfAbsent=true)",
+        }}
+      >
+        <div className="relative flex min-h-[24px] w-full" />
+        <div className="relative mt-3 flex min-h-[34px] w-full items-start justify-center pt-5 pb-2">
+          <div className="h-[5px] w-[139px] rounded-full bg-white" />
         </div>
       </footer>
 
