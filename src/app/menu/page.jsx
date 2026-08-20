@@ -37,6 +37,23 @@ const DISPLAY_ORDER = [
   "ROKOK & ADD-ONS",
 ];
 
+// Urutan kategori ASLI database saat tampil di "ALL" (sidebar tetap pakai display)
+const DB_CATEGORY_ORDER = [
+  "HEAVYWEIGHT CHAMPIONS",
+  "CARBOHYDRATE BOOSTERS",
+  "THE MARINE TOURNAMENT",
+  "TACTICAL RECHARGE & RECOVERY",
+  "HALF-TIME BITES & SNACK LEAGUE",
+  "THE ADDITIONAL PLAYERS",
+  "CAFFEINE INJECTORS",
+  "CLUTCH PERFORMANCE",
+  "ENDURANCE LAB & HYPERDRIVE",
+  "FLUID HYDRATION & REFRESHER",
+  "POST-MATCH HEALING",
+  "THE CELEBRATION",
+  "Rokok",
+];
+
 // Grup sidebar (Tree/Accordion)
 const SIDEBAR_GROUPS = [
   {
@@ -207,6 +224,46 @@ export default function MenuPage() {
     [groupedByDisplay]
   );
 
+  // Kelompokkan produk per kategori ASLI database (untuk render "ALL")
+  const groupedByDb = useMemo(() => {
+    const groups = {};
+    for (const p of allProducts) {
+      const cat = p.category || "LAINNYA";
+      const base = baseName(p.name);
+      const isHot = p.name.endsWith(" Hot");
+      const isIce = p.name.endsWith(" Ice");
+      if (!groups[cat]) groups[cat] = new Map();
+      if (!groups[cat].has(base)) {
+        groups[cat].set(base, {
+          id: `${cat}::${base}`,
+          name: base,
+          category: cat,
+          code: p.code ? p.code.replace(/-(HOT|ICE)$/, "") : "",
+          price: p.price,
+          variants: null,
+        });
+      }
+      const item = groups[cat].get(base);
+      if (isHot || isIce) {
+        item.variants = item.variants || {};
+        item.variants[isHot ? "HOT" : "ICE"] = {
+          id: p.id,
+          name: p.name,
+          code: p.code,
+        };
+      } else if (!item.variants) {
+        item.variants = null;
+      }
+    }
+    const out = {};
+    for (const [cat, map] of Object.entries(groups)) {
+      out[cat] = [...map.values()].sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+    }
+    return out;
+  }, [allProducts]);
+
   // Filter hasil berdasarkan search (client-side)
   const filteredGroups = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -219,14 +276,28 @@ export default function MenuPage() {
     return out;
   }, [groupedByDisplay, search]);
 
+  // Filter search untuk grouping kategori asli DB
+  const filteredDbGroups = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return groupedByDb;
+    const out = {};
+    for (const [cat, items] of Object.entries(groupedByDb)) {
+      const matched = items.filter((p) => p.name.toLowerCase().includes(q));
+      if (matched.length) out[cat] = matched;
+    }
+    return out;
+  }, [groupedByDb, search]);
+
   const shownCategories = useMemo(() => {
     if (activeCategory === "ALL") {
-      return visibleCategories.filter((c) => (filteredGroups[c]?.length ?? 0) > 0);
+      // "ALL" memakai urutan kategori ASLI database
+      return DB_CATEGORY_ORDER.filter((c) => (filteredDbGroups[c]?.length ?? 0) > 0);
     }
+    // Sidebar memilih display category
     return (filteredGroups[activeCategory]?.length ?? 0) > 0
       ? [activeCategory]
       : [];
-  }, [activeCategory, visibleCategories, filteredGroups]);
+  }, [activeCategory, filteredDbGroups, filteredGroups]);
 
   const cartCount = useMemo(
     () => Object.values(cart).reduce((sum, item) => sum + item.qty, 0),
@@ -364,19 +435,22 @@ export default function MenuPage() {
           <div className="space-y-8 px-6">
             {shownCategories.map((cat) => (
               <section key={cat} ref={(el) => (sectionRefs.current[cat] = el)}>
-                {/* Category Header (display name) */}
+                {/* Category Header */}
                 <div className="mb-3 flex items-center justify-between border-b border-[#2a2a35] pb-2">
                   <h2 className="text-[12px] font-extrabold uppercase tracking-wide text-[#f3e3c7] [letter-spacing:-0.6px]">
                     {cat}
                   </h2>
                   <span className="text-[10px] font-medium text-zinc-400 [letter-spacing:-0.5px]">
-                    {productCounts[cat] ?? filteredGroups[cat]?.length ?? 0} items
+                    {(activeCategory === "ALL"
+                      ? filteredDbGroups[cat]?.length ?? 0
+                      : productCounts[cat] ?? 0
+                    )} items
                   </span>
                 </div>
 
                 {/* Items */}
                 <div className="space-y-2.5">
-                  {filteredGroups[cat].map((product) => {
+                  {(activeCategory === "ALL" ? filteredDbGroups[cat] : filteredGroups[cat]).map((product) => {
                     const inCart = cart[product.id];
                     return (
                       <div
