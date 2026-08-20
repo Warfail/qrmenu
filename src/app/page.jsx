@@ -15,8 +15,15 @@ import GuestRatingsModal from "@/components/GuestRatingsModal";
 const GOOGLE_MAPS_URL =
   "https://www.google.com/maps/place/Rooftop+Forty+Five/@-7.3370042,110.4879377,15z/data=!4m6!3m5!1s0x2e7a79339f145283:0x26fa97d90cd2e8d2!8m2!3d-7.3371324!4d110.4982667!16s%2Fg%2F11njpl__k4?entry=ttu&g_ep=EgoyMDI2MDgxMi4wIKXMDSoASAFQAw%3D%3D";
 
-const LIVE_BANNER_TEXT =
-  "Open 24 Hours . VIP Studio . Big Screen . High Speed Wi-fi . Live Music . City View . Portable Skate Park";
+const LIVE_BANNER_EVENTS = [
+  "Open 24 Hours",
+  "VIP Studio",
+  "Big Screen",
+  "High Speed Wi-fi",
+  "Live Music",
+  "City View",
+  "Portable Skate Park",
+];
 
 export default function HomePage() {
   const [settings, setSettings] = useState({
@@ -63,20 +70,16 @@ export default function HomePage() {
           <div className="relative z-10 flex min-h-[44px] w-full" />
         </div>
 
-        {/* LIVE BANNER (running text single line) */}
-        <div className="flex w-full items-center gap-3 overflow-hidden bg-[#f48149] px-6 py-3">
-          <span className="relative flex h-2 w-2 shrink-0">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-black/70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-black" />
-          </span>
-          <div className="relative min-w-0 flex-1 overflow-hidden">
+        {/* LIVE BANNER (running text, tiap event diawali pulse indicator) */}
+        <div className="flex w-full items-center overflow-hidden bg-[#f48149] px-6 py-3">
+          <div className="relative w-full min-w-0 overflow-hidden">
             <div className="animate-marquee flex min-w-max whitespace-nowrap text-[10px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
               {[0, 1].map((copy) => (
                 <span key={copy} className="flex shrink-0 items-center">
-                  {[0, 1].map((i) => (
+                  {LIVE_BANNER_EVENTS.map((evt, i) => (
                     <span key={i} className="flex items-center">
-                      <span className="px-3">{LIVE_BANNER_TEXT}</span>
-                      <span className="px-1 text-black/70">•</span>
+                      <span className="relative mx-1.5 inline-block h-[6px] w-[6px] shrink-0 rounded-full bg-black" />
+                      <span className="px-1">{evt}</span>
                     </span>
                   ))}
                 </span>
