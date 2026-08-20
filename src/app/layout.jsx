@@ -11,6 +11,11 @@ const montserrat = Montserrat({
 export const metadata = {
   title: "ROOFTOP FORTYFIVE",
   description: "Urban Society Studio — 45th Floor, Metropolis Tower Plaza",
+  icons: {
+    icon: "https://res.cloudinary.com/tg0ik7xx/image/upload/v1787221765/RT45_Logo_White.png",
+    shortcut:
+      "https://res.cloudinary.com/tg0ik7xx/image/upload/v1787221765/RT45_Logo_White.png",
+  },
 };
 
 export default function RootLayout({ children }) {
