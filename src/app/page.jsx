@@ -321,21 +321,30 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* LOCATION ICON (free — antara Our Social Media & footer strip) */}
-      <div className="relative mx-auto my-4 flex w-full max-w-[480px] items-center justify-center">
-        <div className="flex w-full flex-col items-center overflow-hidden" style={{ maxWidth: 33 }}>
+      {/* FOOTER */}
+      <footer
+        className="relative mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4"
+        style={{ zIndex: 2 }}
+      >
+        {/* LOCATION ICON — nyelonong: setengah di action stack, setengah di footer */}
+        <div
+          className="absolute"
+          style={{
+            right: "18px",
+            top: 0,
+            transform: "translateY(-50%)",
+            width: 48,
+            height: 48,
+            zIndex: 20,
+          }}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://api.builder.io/api/v1/image/assets/TEMP/c96dab6a978e65b98bfd0855db347731b7e2d0db?placeholderIfAbsent=true"
             alt="location_on"
-            className="w-full"
-            style={{ aspectRatio: "1.242", objectFit: "contain" }}
+            className="h-full w-full object-contain"
           />
         </div>
-      </div>
-
-      {/* FOOTER */}
-      <footer className="mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4">
         {/* Landing footer strip */}
         <div
           className="relative h-[60px] min-h-[60px] w-[384px] max-w-full bg-contain bg-center bg-no-repeat"
