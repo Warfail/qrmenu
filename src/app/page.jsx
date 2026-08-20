@@ -133,7 +133,7 @@ export default function HomePage() {
                 Guest Ratings
               </p>
               <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
-                Bagikan pengalaman Anda di Google Maps
+                Share your experience on Google Maps
               </p>
             </div>
           </div>
