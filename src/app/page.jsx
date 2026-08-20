@@ -6,7 +6,9 @@ import {
   IconChefHat,
   IconArrowRight,
   IconStar,
+  IconAward,
   IconMessageCircle,
+  IconUsers,
   IconChevronRight,
 } from "@tabler/icons-react";
 import FeedbackModal from "@/components/FeedbackModal";
@@ -53,7 +55,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className="flex min-h-screen flex-col justify-start overflow-hidden bg-[#0a0a0c]">
+    <main className="relative flex min-h-screen flex-col justify-start overflow-hidden bg-[#0a0a0c]">
       {/* HERO BANNER */}
       <section className="relative">
         <div className="relative flex aspect-[1.87/1] min-h-[215px] w-full flex-col justify-end overflow-hidden pb-6">
@@ -62,16 +64,36 @@ export default function HomePage() {
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage:
-                "url(https://api.builder.io/api/v1/image/assets/TEMP/b4f1d54010a6639f1c62ba597c092ae7fdc088e7?placeholderIfAbsent=true)",
+                "url(https://api.builder.io/api/v1/image/assets/TEMP/ed7e081e05161d73c04c2ecca414b27fb12db043?placeholderIfAbsent=true)",
             }}
           />
 
-          {/* Status bar (relative, tidak overlap) */}
-          <div className="relative z-10 flex min-h-[44px] w-full" />
+          {/* Status bar */}
+          <div className="absolute left-0 right-0 top-0 z-10 flex min-h-[44px] w-full" />
+
+          {/* Brand - kiri atas */}
+          <div className="absolute left-[25px] top-[80px] z-10 flex items-start">
+            <span className="text-[16px] font-extrabold leading-[1.2] tracking-[-0.8px] text-[#f48149]">
+              rooftop<span className="font-medium">fortyfive.</span>
+            </span>
+          </div>
+
+          {/* Tagline - kanan bawah */}
+          <div className="absolute bottom-[-13px] right-[20px] z-10 flex flex-col items-start">
+            <span className="text-[32px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+              URBAN
+            </span>
+            <span className="text-[32px] font-medium leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+              SOCIETY
+            </span>
+            <span className="text-[32px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+              STUDIO
+            </span>
+          </div>
         </div>
 
         {/* LIVE BANNER (running text, tiap event diawali pulse indicator) */}
-        <div className="flex w-full items-center overflow-hidden bg-[#f48149] px-6 py-3">
+        <div className="mt-[15px] flex w-full items-center overflow-hidden bg-[#f48149] px-6 py-3">
           <div className="relative w-full min-w-0 overflow-hidden">
             <div className="animate-marquee flex min-w-max whitespace-nowrap text-[10px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
               {[0, 1].map((copy) => (
@@ -89,12 +111,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ACTION STACK */}
+      {/* ACTION STACK (4 tombol) */}
       <section
-        className="relative flex aspect-[1.256/1] min-h-[320px] w-full flex-col justify-start overflow-hidden bg-cover bg-center px-6 pb-12 pt-6"
+        className="relative flex aspect-[0.918/1] min-h-[438px] w-full flex-col justify-start overflow-hidden bg-cover bg-center px-6 pb-[62px] pt-[62px]"
         style={{
           backgroundImage:
-            "url(https://api.builder.io/api/v1/image/assets/TEMP/a9bbdfaf8f7d25665566ccf9c20e8c5ca6dd3c3e?placeholderIfAbsent=true)",
+            "url(https://api.builder.io/api/v1/image/assets/TEMP/d2060486470375c1ebcf57c588ab2ab994788d42?placeholderIfAbsent=true)",
         }}
       >
         {/* Explore Menu */}
@@ -111,7 +133,7 @@ export default function HomePage() {
                 Explore Menu
               </p>
               <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
-                Find your spesc
+                Find the perfect dish for your mood
               </p>
             </div>
           </div>
@@ -122,18 +144,18 @@ export default function HomePage() {
         <button
           type="button"
           onClick={() => setShowRatings(true)}
-          className="relative mt-4 flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
+          className="relative mt-[10px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
             <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
-              <IconStar size={24} />
+              <IconAward size={24} />
             </div>
             <div>
               <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
                 Guest Ratings
               </p>
               <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
-                Share your experience on Google Maps
+                Be one of our happy patrons
               </p>
             </div>
           </div>
@@ -145,11 +167,11 @@ export default function HomePage() {
           </div>
         </button>
 
-        {/* Feedbacks */}
+        {/* Feedback */}
         <button
           type="button"
           onClick={() => setShowFeedback(true)}
-          className="relative mt-4 flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
+          className="relative mt-[10px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
             <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
@@ -157,27 +179,59 @@ export default function HomePage() {
             </div>
             <div>
               <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
-                Feedbacks
+                Feedback
               </p>
               <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
-                Tell us about your skyline visit
+                Help us improve your next visit
               </p>
             </div>
           </div>
           <IconChevronRight size={16} className="text-[#f3e3c7]" />
         </button>
+
+        {/* Our Social Media */}
+        <a
+          href={GOOGLE_MAPS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative mt-[10px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] transition hover:brightness-110 active:scale-[0.99]"
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
+              <IconUsers size={24} />
+            </div>
+            <div>
+              <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
+                Our Social Media
+              </p>
+              <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
+                Stay in touch with us
+              </p>
+            </div>
+          </div>
+          <IconChevronRight size={16} className="text-[#f3e3c7]" />
+        </a>
       </section>
 
-      {/* FOOTER */}
+      {/* FOOTER - absolute bottom 87px */}
       <footer
-        className="relative mt-6 flex aspect-[5.743/1] w-[402px] max-w-full flex-col items-start justify-start self-center bg-cover bg-center"
+        className="absolute bottom-[87px] left-1/2 z-10 flex aspect-[6.852/1] h-[54px] w-[370px] max-w-full -translate-x-1/2 items-start justify-center bg-cover bg-center"
         style={{
           backgroundImage:
-            "url(https://api.builder.io/api/v1/image/assets/TEMP/875a9c68745b099a650878dbdef4603cc79b0286?placeholderIfAbsent=true)",
+            "url(https://api.builder.io/api/v1/image/assets/TEMP/b655ed62c1373498a7ecd39c12cbed09f7878830?placeholderIfAbsent=true)",
         }}
       >
-        <div className="relative flex min-h-[24px] w-full" />
-        <div className="relative mt-4 flex min-h-[34px] w-full items-center justify-center pt-7 pb-2" />
+        <div className="relative mt-[-30px] flex min-h-[60px] flex-col items-center gap-0.5">
+          <p className="text-[10px] font-bold tracking-wide text-white/90">
+            Open Daily: 4:00 PM — 2:00 AM
+          </p>
+          <p className="text-[9px] font-medium text-white/70">
+            45th Floor, Metropolis Tower Plaza
+          </p>
+          <p className="mt-0.5 text-[9px] font-semibold tracking-wide text-white/80">
+            Designed by <span className="font-bold text-white">Rooftop FortyFive</span>
+          </p>
+        </div>
       </footer>
 
       {/* MODALS */}
