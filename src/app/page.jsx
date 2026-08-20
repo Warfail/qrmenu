@@ -63,13 +63,9 @@ export default function HomePage() {
           <div className="relative z-10 flex min-h-[44px] w-full" />
         </div>
 
-        {/* LIVE BANNER (running text single line) */}
-        <div className="flex w-full items-center gap-3 overflow-hidden bg-[#f48149] px-6 py-3">
-          <span className="relative flex h-2 w-2 shrink-0">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-black/70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-black" />
-          </span>
-          <div className="relative min-w-0 flex-1 overflow-hidden">
+        {/* LIVE BANNER (running text single line, tanpa pulse indicator) */}
+        <div className="flex w-full items-center overflow-hidden bg-[#f48149] px-6 py-3">
+          <div className="relative min-w-0 w-full overflow-hidden">
             <div className="animate-marquee flex min-w-max whitespace-nowrap text-[10px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
               {[0, 1].map((copy) => (
                 <span key={copy} className="flex shrink-0 items-center">
@@ -167,16 +163,24 @@ export default function HomePage() {
 
       {/* FOOTER */}
       <footer
-        className="relative mt-6 flex aspect-[5.743/1] w-[402px] max-w-full flex-col items-start justify-start self-center bg-cover bg-center"
+        className="relative mt-6 flex aspect-[5.743/1] w-[402px] max-w-full flex-col items-center justify-start self-center bg-cover bg-center px-4 pt-3"
         style={{
           backgroundImage:
             "url(https://api.builder.io/api/v1/image/assets/TEMP/875a9c68745b099a650878dbdef4603cc79b0286?placeholderIfAbsent=true)",
         }}
       >
-        <div className="relative flex min-h-[24px] w-full" />
-        <div className="relative mt-3 flex min-h-[34px] w-full items-start justify-center pt-5 pb-2">
-          <div className="h-[5px] w-[139px] rounded-full bg-white" />
+        <div className="relative flex flex-col items-center gap-0.5">
+          <p className="text-[11px] font-bold tracking-wide text-white/90">
+            Open Daily: 4:00 PM — 2:00 AM
+          </p>
+          <p className="text-[10px] font-medium text-white/70">
+            45th Floor, Metropolis Tower Plaza
+          </p>
+          <p className="mt-1 text-[10px] font-semibold tracking-wide text-white/80">
+            Design by <span className="font-bold text-white">Rezky A.K</span>
+          </p>
         </div>
+        <div className="relative flex min-h-[24px] w-full" />
       </footer>
 
       {/* MODALS */}
