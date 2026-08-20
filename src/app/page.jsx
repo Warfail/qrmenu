@@ -144,7 +144,7 @@ export default function HomePage() {
         <button
           type="button"
           onClick={() => setShowRatings(true)}
-          className="relative mt-[10px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
+          className="relative mt-[8px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
             <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
@@ -171,7 +171,7 @@ export default function HomePage() {
         <button
           type="button"
           onClick={() => setShowFeedback(true)}
-          className="relative mt-[10px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
+          className="relative mt-[8px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
             <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
@@ -194,7 +194,7 @@ export default function HomePage() {
           href={GOOGLE_MAPS_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="relative mt-[10px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] transition hover:brightness-110 active:scale-[0.99]"
+          className="relative mt-[8px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] transition hover:brightness-110 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
             <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
