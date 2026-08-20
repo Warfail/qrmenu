@@ -27,7 +27,7 @@ const LIVE_BANNER_EVENTS = [
 
 export default function HomePage() {
   const [settings, setSettings] = useState({
-    whatsappNumber: "6281234567890",
+    whatsappNumber: "62895634120999",
     googlePlaceId: "",
   });
   const [showFeedback, setShowFeedback] = useState(false);
