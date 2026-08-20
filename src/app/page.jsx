@@ -339,6 +339,16 @@ export default function HomePage() {
               "url(https://api.builder.io/api/v1/image/assets/TEMP/7f82a1ed5b6eb46bcb8933dc37b55513ff00e3c6?placeholderIfAbsent=true)",
           }}
         />
+        {/* Location icon (desain Figma / builder.io) */}
+        <div className="relative mt-1 flex w-full flex-col items-center overflow-hidden" style={{ maxWidth: 33 }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://api.builder.io/api/v1/image/assets/TEMP/c96dab6a978e65b98bfd0855db347731b7e2d0db?placeholderIfAbsent=true"
+            alt="location_on"
+            className="w-full"
+            style={{ aspectRatio: "1.242", objectFit: "contain" }}
+          />
+        </div>
       </footer>
 
       {/* MODALS */}
