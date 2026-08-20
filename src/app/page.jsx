@@ -58,13 +58,13 @@ export default function HomePage() {
     <main className="relative flex min-h-screen flex-col justify-start overflow-hidden bg-[#0a0a0c]">
       {/* HERO BANNER */}
       <section className="relative">
-        <div className="relative flex aspect-[1.87/1] min-h-[215px] w-full flex-col justify-end overflow-hidden pb-6">
+        <div className="relative flex aspect-[1.748/1] min-h-[230px] w-full flex-col justify-start overflow-hidden pb-6">
           {/* Background image */}
           <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
               backgroundImage:
-                "url(https://api.builder.io/api/v1/image/assets/TEMP/ed7e081e05161d73c04c2ecca414b27fb12db043?placeholderIfAbsent=true)",
+                "url(https://api.builder.io/api/v1/image/assets/TEMP/5213c6467ccbd0e62e8132a28f785c7046b7324f?placeholderIfAbsent=true)",
             }}
           />
 
@@ -79,7 +79,7 @@ export default function HomePage() {
           </div>
 
           {/* Tagline - kanan bawah */}
-          <div className="absolute bottom-[-13px] right-[20px] z-10 flex flex-col items-start">
+          <div className="absolute bottom-[2px] right-[179px] z-10 flex w-[198px] flex-col items-start">
             <span className="text-[32px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
               URBAN
             </span>
@@ -93,7 +93,7 @@ export default function HomePage() {
         </div>
 
         {/* LIVE BANNER (running text, tiap event diawali pulse indicator) */}
-        <div className="mt-[15px] flex w-full items-center overflow-hidden bg-[#f48149] px-6 py-3">
+        <div className="mt-[15px] flex min-h-[38px] w-full items-center overflow-hidden bg-[#f48149] px-6 py-[13px]">
           <div className="relative w-full min-w-0 overflow-hidden">
             <div className="animate-marquee flex min-w-max whitespace-nowrap text-[10px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
               {[0, 1].map((copy) => (
@@ -214,21 +214,21 @@ export default function HomePage() {
       </section>
 
       {/* FOOTER */}
-      <footer className="relative mt-[18px] h-[80px] w-full items-start justify-start">
+      <footer className="mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4">
         {/* Landing footer strip */}
         <div
-          className="absolute left-1/2 top-2 h-[54px] w-[370px] max-w-full -translate-x-1/2 bg-contain bg-center bg-no-repeat"
+          className="relative h-[60px] min-h-[60px] w-[384px] max-w-full bg-contain bg-center bg-no-repeat"
           style={{
             backgroundImage:
-              "url(https://api.builder.io/api/v1/image/assets/TEMP/b655ed62c1373498a7ecd39c12cbed09f7878830?placeholderIfAbsent=true)",
+              "url(https://api.builder.io/api/v1/image/assets/TEMP/51bbaf151f0379c20cca4c73d269058c5738f2a3?placeholderIfAbsent=true)",
           }}
         />
-        {/* Hours block (jam & alamat tertanam di gambar) */}
+        {/* Logo */}
         <div
-          className="absolute bottom-[-45px] left-1/2 h-[111px] w-[402px] max-w-full -translate-x-1/2 bg-contain bg-center bg-no-repeat"
+          className="relative mt-2 h-[50px] min-h-[50px] w-[50px] bg-contain bg-center bg-no-repeat"
           style={{
             backgroundImage:
-              "url(https://api.builder.io/api/v1/image/assets/TEMP/2a37b385500c61a441dfc36c0903a0e56b9868c5?placeholderIfAbsent=true)",
+              "url(https://api.builder.io/api/v1/image/assets/TEMP/7f82a1ed5b6eb46bcb8933dc37b55513ff00e3c6?placeholderIfAbsent=true)",
           }}
         />
       </footer>
