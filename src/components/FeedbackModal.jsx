@@ -24,7 +24,7 @@ export default function FeedbackModal({ open, onClose, whatsappNumber }) {
 
     const lines = [
       "*ROOFTOP45 — Feedback*",
-      `⭐ Rating: ${rating}/5`,
+      `Rating: ${rating}/5 bintang`,
       "",
       message.trim() || "Tidak ada pesan tambahan.",
     ];
