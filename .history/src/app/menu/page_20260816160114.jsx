@@ -1,0 +1,511 @@
+"use client";
+
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  IconArrowLeft,
+  IconSearch,
+  IconPlus,
+  IconMinus,
+  IconChevronRight,
+  IconMenu2,
+  IconX,
+  IconCategory,
+  IconBowl,
+  IconCup,
+  IconPackages,
+  IconChevronLeft,
+} from "@tabler/icons-react";
+import OrderSheet from "@/components/OrderSheet";
+import { useCart } from "@/components/CartContext";
+
+function formatIDR(value) {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value || 0);
+}
+
+const ALL_CATEGORY = { id: "all", name: "All", icon: "", description: "" };
+
+// Kelompok tipe menu berdasarkan kategori dari JSON
+const FOOD_CATEGORIES = [
+  "CARBOHYDRATE BOOSTERS",
+  "HEAVYWEIGHT CHAMPIONS",
+  "THE MARINE TOURNAMENT",
+  "TACTICAL RECHARGE & RECOVERY",
+  "HALF-TIME BITES & SNACK LEAGUE",
+  "THE ADDITIONAL PLAYERS",
+];
+const DRINK_CATEGORIES = [
+  "CAFFEINE INJECTORS",
+  "CLUTCH PERFORMANCE",
+  "ENDURANCE LAB & HYPERDRIVE",
+  "FLUID HYDRATION & REFRESHER",
+  "POST-MATCH HEALING",
+  "THE CELEBRATION",
+];
+const OTHER_CATEGORIES = ["Rokok"];
+
+const BG_IMAGE =
+  "https://api.builder.io/api/v1/image/assets/TEMP/979e074464d8e4c44b55b3a495ff275e80e38426?placeholderIfAbsent=true";
+
+export default function MenuPage() {
+  const router = useRouter();
+  const { cart, addToCart, removeFromCart, clearCart } = useCart();
+
+  const [categories, setCategories] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeType, setActiveType] = useState("all"); // all | makanan | minuman | lainnya
+  const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
+  const [loadingCats, setLoadingCats] = useState(true);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [error, setError] = useState("");
+  const [showOrder, setShowOrder] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const searchRef = useRef(null);
+  const activeRef = useRef(null);
+
+  // Load categories
+  useEffect(() => {
+    let active = true;
+    fetch("/api/categories")
+      .then((res) => (res.ok ? res.json() : { categories: [] }))
+      .then((json) => {
+        if (active) setCategories(json.categories || []);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (active) setLoadingCats(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Load products per category
+  useEffect(() => {
+    let active = true;
+    setLoadingProducts(true);
+    setError("");
+    const query =
+      activeCategory && activeCategory !== "All"
+        ? `?category=${encodeURIComponent(activeCategory)}`
+        : "";
+    fetch(`/api/products${query}`)
+      .then((res) => {
+        if (!res.ok) throw new Error("Gagal memuat produk.");
+        return res.json();
+      })
+      .then((json) => {
+        if (active) setProducts(json.products || []);
+      })
+      .catch((err) => {
+        if (active) setError(err.message || "Terjadi kesalahan.");
+      })
+      .finally(() => {
+        if (active) setLoadingProducts(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [activeCategory]);
+
+  // Scroll active category pill into view
+  useEffect(() => {
+    activeRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "center",
+    });
+  }, [activeCategory]);
+
+  const filteredProducts = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return products;
+    return products.filter((p) => p.name.toLowerCase().includes(q));
+  }, [products, search]);
+
+  const cartCount = useMemo(
+    () => Object.values(cart).reduce((sum, item) => sum + item.qty, 0),
+    [cart]
+  );
+  const cartTotal = useMemo(
+    () =>
+      Object.values(cart).reduce((sum, item) => sum + item.qty * item.product.price, 0),
+    [cart]
+  );
+
+  const cartItems = useMemo(
+    () =>
+      Object.values(cart).sort((a, b) =>
+        a.product.name.localeCompare(b.product.name)
+      ),
+    [cart]
+  );
+
+  // Kategori yang tampil di carousel berdasarkan tipe aktif
+  const visibleCategories = useMemo(() => {
+    if (activeType === "makanan") {
+      return categories.filter((c) => FOOD_CATEGORIES.includes(c.name));
+    }
+    if (activeType === "minuman") {
+      return categories.filter((c) => DRINK_CATEGORIES.includes(c.name));
+    }
+    if (activeType === "lainnya") {
+      return categories.filter((c) => OTHER_CATEGORIES.includes(c.name));
+    }
+    return categories;
+  }, [categories, activeType]);
+
+  const categoriesList = useMemo(
+    () => [ALL_CATEGORY, ...visibleCategories],
+    [visibleCategories]
+  );
+
+  // Saat pilih tipe dari drawer, reset kategori aktif ke "All" & tutup drawer
+  function selectType(type) {
+    setActiveType(type);
+    setActiveCategory("All");
+    setDrawerOpen(false);
+  }
+
+  const menuGroups = [
+    {
+      id: "all",
+      label: "Kategori",
+      icon: IconCategory,
+      desc: `${categories.length} kategori lengkap`,
+    },
+    {
+      id: "makanan",
+      label: "Makanan",
+      icon: IconBowl,
+      desc: "Nasi, mie, lauk & seafood",
+    },
+    {
+      id: "minuman",
+      label: "Minuman",
+      icon: IconCup,
+      desc: "Kopi, teh, jus & alkohol",
+    },
+    {
+      id: "lainnya",
+      label: "Lainnya",
+      icon: IconPackages,
+      desc: "Rokok & kebutuhan lain",
+    },
+  ];
+
+  return (
+    <main
+      className="flex min-h-screen flex-col bg-[#0a0a0c] pb-32"
+      style={{
+        backgroundImage: `radial-gradient(ellipse at 50% 0%, rgba(249,115,22,0.18) 0%, rgba(10,10,12,0) 45%), linear-gradient(180deg, rgba(10,10,12,0.82) 0%, rgba(10,10,12,0.68) 40%, rgba(10,10,12,0.94) 100%), url(${BG_IMAGE})`,
+        backgroundSize: "auto, auto, cover",
+        backgroundPosition: "center, center, center",
+        backgroundRepeat: "no-repeat, no-repeat, no-repeat",
+      }}
+    >
+      {/* TOP NAVBAR */}
+      <header className="flex w-full items-center justify-between px-6 py-3">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => router.push("/")}
+            aria-label="Kembali"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#f48048]/40 bg-[#18181e] transition hover:bg-[#1f1f27]"
+          >
+            <IconArrowLeft size={20} className="text-white" />
+          </button>
+          <div>
+            <h1 className="text-[18px] font-bold text-white">Menu Selection</h1>
+            <p className="text-xs text-zinc-400">Rooftop Fortyfive</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          aria-label="Buka menu"
+          onClick={() => setDrawerOpen(true)}
+          className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#f48048]/40 bg-[#18181e] transition hover:bg-[#1f1f27]"
+        >
+          <IconMenu2 size={20} className="text-white" />
+        </button>
+      </header>
+
+      {/* SEARCH BAR */}
+      <div className="px-6 pb-4">
+        <div className="flex min-h-[48px] w-full items-center gap-2.5 rounded-xl border border-[#f48048]/40 bg-[#18181e] px-4">
+          <IconSearch size={18} className="shrink-0 text-zinc-400" />
+          <input
+            ref={searchRef}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search dishes, cocktails, or grills..."
+            className="h-full w-full flex-1 bg-transparent text-sm text-white placeholder-zinc-500 outline-none"
+          />
+          {search && (
+            <button
+              type="button"
+              onClick={() => setSearch("")}
+              aria-label="Hapus pencarian"
+              className="shrink-0 rounded-full bg-[#2a2a35] px-2 py-0.5 text-xs text-zinc-400 hover:text-white"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ACTIVE TYPE LABEL */}
+      {activeType !== "all" && (
+        <div className="flex items-center gap-2 px-6 pb-3">
+          <span className="text-xs font-bold uppercase tracking-wide text-orange-500">
+            {menuGroups.find((g) => g.id === activeType)?.label}
+          </span>
+          <button
+            type="button"
+            onClick={() => {
+              setActiveType("all");
+              setActiveCategory("All");
+            }}
+            className="flex items-center gap-1 rounded-full bg-[#18181e] px-2.5 py-1 text-[11px] text-zinc-400 transition hover:text-white"
+          >
+            <IconChevronLeft size={12} />
+            Semua Kategori
+          </button>
+        </div>
+      )}
+
+      {/* CATEGORIES CAROUSEL */}
+      <div className="no-scrollbar flex gap-2 overflow-x-auto px-6 pb-4">
+        {loadingCats ? (
+          <div className="h-10 w-24 animate-pulse rounded-xl bg-[#18181e]" />
+        ) : (
+          categoriesList.map((cat) => {
+            const active = activeCategory === cat.name;
+            return (
+              <button
+                key={cat.id}
+                ref={active ? activeRef : undefined}
+                type="button"
+                onClick={() => setActiveCategory(cat.name)}
+                className={`shrink-0 whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-medium transition ${
+                  active
+                    ? "bg-orange-500 font-semibold text-white"
+                    : "border border-[#f48048]/40 bg-[#18181e] text-white hover:bg-[#1f1f27]"
+                }`}
+              >
+                {cat.name}
+              </button>
+            );
+          })
+        )}
+      </div>
+
+      {/* MENU ITEMS LIST */}
+      <section className="flex flex-col gap-3 px-6">
+        {loadingProducts && (
+          <div className="flex justify-center py-12">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
+          </div>
+        )}
+
+        {!loadingProducts && error && (
+          <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-center text-sm text-red-400">
+            {error}
+          </div>
+        )}
+
+        {!loadingProducts && !error && filteredProducts.length === 0 && (
+          <div className="flex flex-col items-center py-14 text-center">
+            <IconSearch size={36} className="mb-3 text-zinc-600" />
+            <p className="text-sm font-semibold text-zinc-300">
+              {search ? "Produk tidak ditemukan" : "Belum ada produk"}
+            </p>
+            <p className="mt-1 text-xs text-zinc-500">
+              {search
+                ? `Coba kata kunci lain di "${activeCategory}".`
+                : `Tidak ada item di kategori ${activeCategory}.`}
+            </p>
+          </div>
+        )}
+
+        {!loadingProducts &&
+          !error &&
+          filteredProducts.map((product) => {
+            const inCart = cart[product.id];
+            return (
+              <div
+                key={product.id}
+                className="flex w-full items-center gap-3.5 rounded-2xl border border-[#f48048]/40 bg-[#18181e] px-3.5 py-3.5"
+              >
+                <div className="flex min-w-0 flex-1 flex-col">
+                  <p className="min-w-0 truncate text-[15px] font-bold text-white">
+                    {product.name}
+                  </p>
+                  <div className="flex w-full items-center justify-between gap-4">
+                    <p className="text-[16px] font-bold text-orange-500">
+                      {formatIDR(product.price)}
+                    </p>
+                    <div className="flex items-center">
+                      {inCart && inCart.qty > 0 ? (
+                        <div className="flex items-center gap-2 rounded-lg border border-orange-500 bg-[#22222b] px-2.5 py-1.5">
+                          <button
+                            type="button"
+                            aria-label="Kurangi"
+                            onClick={() => removeFromCart(product.id)}
+                            className="text-white transition hover:text-orange-500"
+                          >
+                            <IconMinus size={14} />
+                          </button>
+                          <span className="min-w-[16px] text-center text-[13px] font-bold text-white">
+                            {inCart.qty}
+                          </span>
+                          <button
+                            type="button"
+                            aria-label="Tambah"
+                            onClick={() => addToCart(product)}
+                            className="text-orange-500 transition hover:text-orange-400"
+                          >
+                            <IconPlus size={14} />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => addToCart(product)}
+                          className="flex items-center gap-1 rounded-lg border border-orange-500 bg-[#22222b] px-3 py-1.5 font-bold text-white transition hover:bg-orange-500/20"
+                        >
+                          <IconPlus size={12} />
+                          ADD
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+      </section>
+
+      {/* FLOATING CART DOCK */}
+      {cartCount > 0 && (
+        <div className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[480px] border-t border-[#f48048]/40 bg-[#0a0a0c]/90 backdrop-blur">
+          <div className="px-6 pb-4 pt-4">
+            <button
+              type="button"
+              onClick={() => setShowOrder(true)}
+              className="flex min-h-[54px] w-full items-center justify-between gap-4 rounded-2xl bg-orange-500 px-4 transition hover:bg-orange-600 active:scale-[0.99]"
+            >
+              <div className="flex items-center gap-3">
+                <span className="rounded-lg bg-white px-2.5 py-1 text-[13px] font-bold text-orange-500">
+                  {cartCount}
+                </span>
+                <div className="text-left">
+                  <p className="text-[15px] font-bold text-white">
+                    {cartCount} item{cartCount > 1 ? "s" : ""} in Basket
+                  </p>
+                  <p className="text-[11px] text-white/80">
+                    Estimated: {formatIDR(cartTotal)}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[15px] font-bold text-white">View Order</span>
+                <IconChevronRight size={18} className="text-white" />
+              </div>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* DRAWER HAMBURGER MENU */}
+      {drawerOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+          onClick={() => setDrawerOpen(false)}
+        >
+          <div
+            className="absolute right-0 top-0 flex h-full w-[300px] max-w-[85%] animate-slide-left flex-col border-l border-[#f48048]/40 bg-[#121216] p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-orange-500">
+                  Rooftop Fourtyfive.
+                </p>
+                <h2 className="text-lg font-bold text-white">Menu Categories</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(false)}
+                aria-label="Tutup"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2a2a2a] text-[#aaaaaa] transition hover:text-white"
+              >
+                <IconX size={16} />
+              </button>
+            </div>
+
+            <div className="flex-1 space-y-2">
+              {menuGroups.map((group) => {
+                const GroupIcon = group.icon;
+                const active = activeType === group.id;
+                return (
+                  <button
+                    key={group.id}
+                    type="button"
+                    onClick={() => selectType(group.id)}
+                    className={`flex w-full items-center gap-3 rounded-2xl border px-4 py-3.5 text-left transition ${
+                      active
+                        ? "border-orange-500 bg-orange-500/15"
+                        : "border-[#f48048]/40 bg-[#18181e] hover:bg-[#1f1f27]"
+                    }`}
+                  >
+                    <GroupIcon
+                      size={22}
+                      className={active ? "shrink-0 text-orange-500" : "shrink-0 text-orange-500"}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className={`text-sm font-bold ${active ? "text-orange-500" : "text-white"}`}>
+                        {group.label}
+                      </p>
+                      <p className="truncate text-[11px] text-zinc-400">{group.desc}</p>
+                    </div>
+                    <IconChevronRight size={16} className="shrink-0 text-zinc-500" />
+                  </button>
+                );
+              })}
+            </div>
+
+            {activeType !== "all" && (
+              <button
+                type="button"
+                onClick={() => selectType("all")}
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-[#f48048]/40 bg-[#18181e] px-4 py-3 text-sm font-semibold text-zinc-300 transition hover:text-white"
+              >
+                <IconCategory size={16} />
+                Tampilkan Semua
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ORDER SHEET (Cart → Confirm → Receipt) */}
+      <OrderSheet
+        open={showOrder}
+        onClose={() => setShowOrder(false)}
+        cartItems={cartItems}
+        onAdd={addToCart}
+        onRemove={removeFromCart}
+        onClear={clearCart}
+        subtotal={cartTotal}
+      />
+    </main>
+  );
+}

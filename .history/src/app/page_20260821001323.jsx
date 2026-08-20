@@ -20,21 +20,23 @@ import GuestRatingsModal from "@/components/GuestRatingsModal";
 const GOOGLE_MAPS_URL =
   "https://www.google.com/maps/place/Rooftop+Forty+Five/@-7.3370042,110.4879377,15z/data=!4m6!3m5!1s0x2e7a79339f145283:0x26fa97d90cd2e8d2!8m2!3d-7.3371324!4d110.4982667!16s%2Fg%2F11njpl__k4?entry=ttu&g_ep=EgoyMDI2MDgxMi4wIKXMDSoASAFQAw%3D%3D";
 
-const LIVE_BANNER_EVENTS = [
-  "Open 24 Hours",
-  "VIP Studio",
-  "Big Screen",
-  "High Speed Wi-fi",
-  "Live Music",
-  "City View",
-  "Portable Skate Park",
-];
+const DEFAULT_PROMO_TEXT =
+  "Open 24 Hours . VIP Studio . Big Screen . High Speed Wi-fi . Live Music . City View . Portable Skate Park";
 
 export default function HomePage() {
   const [settings, setSettings] = useState({
     whatsappNumber: "62895634120999",
     googlePlaceId: "",
   });
+  const [promoEvents, setPromoEvents] = useState([
+    "Open 24 Hours",
+    "VIP Studio",
+    "Big Screen",
+    "High Speed Wi-fi",
+    "Live Music",
+    "City View",
+    "Portable Skate Park",
+  ]);
   const [showFeedback, setShowFeedback] = useState(false);
   const [showRatings, setShowRatings] = useState(false);
   const [showSocialMenu, setShowSocialMenu] = useState(false);
@@ -72,6 +74,27 @@ export default function HomePage() {
             googlePlaceId: json.settings.googlePlaceId || prev.googlePlaceId,
           }));
         }
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Fetch running text promo dari API (fallback ke teks default)
+  useEffect(() => {
+    let active = true;
+    fetch("/api/promo")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (!active) return;
+        const text = json?.text?.trim() || DEFAULT_PROMO_TEXT;
+        // Split berdasarkan "-" lalu bersihkan & gabung event
+        const events = text
+          .split("-")
+          .map((e) => e.trim())
+          .filter(Boolean);
+        setPromoEvents((prev) => (events.length ? events : prev));
       })
       .catch(() => {});
     return () => {
@@ -123,7 +146,7 @@ export default function HomePage() {
             <div className="animate-marquee flex min-w-max whitespace-nowrap text-[12px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
               {[0, 1].map((copy) => (
                 <span key={copy} className="flex shrink-0 items-center">
-                  {LIVE_BANNER_EVENTS.map((evt, i) => (
+                  {promoEvents.map((evt, i) => (
                     <span key={i} className="flex items-center">
                       <span className="relative mx-1.5 inline-block h-[6px] w-[6px] shrink-0 rounded-full bg-black" />
                       <span className="px-1">{evt}</span>
@@ -299,36 +322,53 @@ export default function HomePage() {
       )}
 
       {/* FOOTER */}
-      <footer
-        className="relative mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4"
-        style={{ zIndex: 2 }}
-      >
-        {/* LOCATION ICON — nyelonong: setengah di action stack, setengah di footer */}
-        <a
-          href="https://maps.app.goo.gl/LEvD7LbcxwcDfQyH6"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Buka lokasi di Google Maps"
-          className="absolute block"
-          style={{
-            right: "34px",
-            top: "-8px",
-            transform: "translateY(-50%)",
-            width: 48,
-            height: 48,
-            zIndex: 20,
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/c96dab6a978e65b98bfd0855db347731b7e2d0db?placeholderIfAbsent=true"
-            alt="location_on"
-            className="h-full w-full object-contain"
-          />
-        </a>
+      <footer className="mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-6 py-4">
+        {/* Jam operasional + Alamat dengan ikon pin yang pastii tampil */}
+        <div className="flex w-full flex-col items-center gap-1">
+          <div className="flex items-center gap-1.5">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#f48149"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4 w-4 shrink-0"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <span className="text-[13px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.5px]">
+              Open Daily: 4:00 PM — 2:00 AM
+            </span>
+          </div>
+          <a
+            href={GOOGLE_MAPS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center justify-center gap-1.5"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#f48149"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4 w-4 shrink-0"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <span className="text-center text-[11px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px] transition hover:text-[#f48149]">
+              45th Floor, Metropolis Tower Plaza
+            </span>
+          </a>
+        </div>
+
         {/* Landing footer strip */}
         <div
-          className="relative h-[60px] min-h-[60px] w-[384px] max-w-full bg-contain bg-center bg-no-repeat"
+          className="relative mt-3 h-[60px] min-h-[60px] w-[384px] max-w-full bg-contain bg-center bg-no-repeat"
           style={{
             backgroundImage:
               "url(https://api.builder.io/api/v1/image/assets/TEMP/51bbaf151f0379c20cca4c73d269058c5738f2a3?placeholderIfAbsent=true)",

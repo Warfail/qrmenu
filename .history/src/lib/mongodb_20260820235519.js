@@ -54,3 +54,9 @@ export async function getProductsCollection() {
   const db = client.db(DB_NAME);
   return db.collection("products");
 }
+
+export async function getSettingsCollection() {
+  const client = await clientPromise;
+  const db = client.db(DB_NAME);
+  return db.collection("settings");
+}

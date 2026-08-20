@@ -9,11 +9,8 @@ import {
   IconAward,
   IconMessageCircle,
   IconUsers,
-  IconBrandWhatsapp,
-  IconX,
+  IconChevronRight,
 } from "@tabler/icons-react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLink } from "@fortawesome/free-solid-svg-icons";
 import FeedbackModal from "@/components/FeedbackModal";
 import GuestRatingsModal from "@/components/GuestRatingsModal";
 
@@ -37,28 +34,6 @@ export default function HomePage() {
   });
   const [showFeedback, setShowFeedback] = useState(false);
   const [showRatings, setShowRatings] = useState(false);
-  const [showSocialMenu, setShowSocialMenu] = useState(false);
-
-  const SOCIAL_LINKS = [
-    {
-      id: "fb",
-      label: "Facebook",
-      iconUrl: "https://cdn.simpleicons.org/facebook",
-      href: "https://www.facebook.com/share/19A6JojNt5/",
-    },
-    {
-      id: "ig",
-      label: "Instagram",
-      iconUrl: "https://cdn.simpleicons.org/instagram",
-      href: "https://www.instagram.com/rooftopfortyfive_salatiga?igsh=MTRzM2w2dDRmZ2hwZA==&igsi=MTRzM2w2dDRmZ2hwZA==",
-    },
-    {
-      id: "tiktok",
-      label: "TikTok",
-      iconUrl: "https://cdn.simpleicons.org/tiktok",
-      href: "https://www.tiktok.com/@rooftop45_?_r=1&_t=ZS-992nkx9TvvD",
-    },
-  ];
 
   useEffect(() => {
     let active = true;
@@ -96,22 +71,22 @@ export default function HomePage() {
           {/* Status bar */}
           <div className="absolute left-0 right-0 top-0 z-10 flex min-h-[44px] w-full" />
 
-          {/* Brand - kiri atas (posisi navbar, tidak tabrakan dengan tagline) */}
-          <div className="absolute left-[25px] top-[52px] z-10 flex h-[44px] items-start">
+          {/* Brand - kiri atas */}
+          <div className="absolute left-[25px] top-[80px] z-10 flex items-start">
             <span className="text-[16px] font-extrabold leading-[1.2] tracking-[-0.8px] text-[#f48149]">
               rooftop<span className="font-medium">fortyfive.</span>
             </span>
           </div>
 
-          {/* Tagline - kiri bawah (sejajar dengan brand, tidak terpotong) */}
-          <div className="absolute bottom-[2px] left-[25px] z-10 flex w-max max-w-full flex-col items-start">
-            <span className="text-[48px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+          {/* Tagline - kanan bawah */}
+          <div className="absolute bottom-[2px] right-[179px] z-10 flex w-[198px] flex-col items-start">
+            <span className="text-[32px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
               URBAN
             </span>
-            <span className="text-[48px] font-medium leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+            <span className="text-[32px] font-medium leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
               SOCIETY
             </span>
-            <span className="text-[48px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+            <span className="text-[32px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
               STUDIO
             </span>
           </div>
@@ -120,7 +95,7 @@ export default function HomePage() {
         {/* LIVE BANNER (running text, tiap event diawali pulse indicator) */}
         <div className="mt-[22px] flex min-h-[38px] w-full items-center overflow-hidden bg-[#f48149] px-6 pb-[16px] pt-[13px]">
           <div className="relative w-full min-w-0 overflow-hidden">
-            <div className="animate-marquee flex min-w-max whitespace-nowrap text-[12px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
+            <div className="animate-marquee flex min-w-max whitespace-nowrap text-[10px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
               {[0, 1].map((copy) => (
                 <span key={copy} className="flex shrink-0 items-center">
                   {LIVE_BANNER_EVENTS.map((evt, i) => (
@@ -147,7 +122,7 @@ export default function HomePage() {
         {/* Explore Menu */}
         <Link
           href="/menu"
-          className="relative flex w-full items-center justify-between gap-4 bg-[#f48149] px-[18px] py-[18px] transition hover:brightness-110 active:scale-[0.99]"
+          className="relative flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] transition hover:brightness-110 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
             <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
@@ -169,7 +144,7 @@ export default function HomePage() {
         <button
           type="button"
           onClick={() => setShowRatings(true)}
-          className="relative mt-[8px] flex w-full items-center justify-between gap-4 bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
+          className="relative mt-[10px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
             <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
@@ -192,11 +167,11 @@ export default function HomePage() {
           </div>
         </button>
 
-        {/* Feedback - icon kanan WhatsApp */}
+        {/* Feedback */}
         <button
           type="button"
           onClick={() => setShowFeedback(true)}
-          className="relative mt-[8px] flex w-full items-center justify-between gap-4 bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
+          className="relative mt-[10px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
         >
           <div className="flex items-center gap-3.5">
             <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
@@ -211,121 +186,35 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-          <IconBrandWhatsapp size={20} className="text-[#f3e3c7]" />
+          <IconChevronRight size={16} className="text-[#f3e3c7]" />
         </button>
 
-        {/* Our Social Media - toggle dropdown */}
-        <div className="relative mt-[8px]">
-          <button
-            type="button"
-            onClick={() => setShowSocialMenu((v) => !v)}
-            className="flex w-full items-center justify-between gap-4 bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
-          >
-            <div className="flex items-center gap-3.5">
-              <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
-                <IconUsers size={24} />
-              </div>
-              <div>
-                <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
-                  Our Social Media
-                </p>
-                <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
-                  Stay in touch with us
-                </p>
-              </div>
-            </div>
-            <FontAwesomeIcon
-              icon={faLink}
-              className="h-[18px] w-[18px] shrink-0 text-[#f3e3c7]"
-            />
-          </button>
-
-        </div>
-      </section>
-
-      {/* SOCIAL MEDIA MODAL */}
-      {showSocialMenu && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden p-5"
-          onClick={() => setShowSocialMenu(false)}
-        >
-          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-          <div
-            className="relative w-full max-w-[342px] border border-white/[0.082] bg-[#161618] p-6 shadow-[0px_16px_32px_rgba(0,0,0,0.502)]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-[10px] font-extrabold uppercase text-[#f48149] [letter-spacing:-0.5px]">
-                  Our Social Media
-                </p>
-                <h3 className="mt-1 text-[22px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-1.1px]">
-                  Stay in Touch
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowSocialMenu(false)}
-                aria-label="Tutup"
-                className="flex h-8 w-8 items-center justify-center border border-white/[0.082] bg-[#1f1f23] text-[#aaaaaa] transition hover:text-[#f3e3c7]"
-              >
-                <IconX size={16} />
-              </button>
-            </div>
-
-            <div className="mt-5 flex flex-col gap-2">
-              {SOCIAL_LINKS.map((s) => (
-                <a
-                  key={s.id}
-                  href={s.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex w-full items-center gap-3 rounded-xl border border-white/[0.082] bg-[#1f1f23] px-4 py-3 text-[17px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.85px] transition hover:bg-white/[0.06]"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={s.iconUrl}
-                    alt={s.label}
-                    width={20}
-                    height={20}
-                    className="h-5 w-5 shrink-0 object-contain"
-                  />
-                  {s.label}
-                </a>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* FOOTER */}
-      <footer
-        className="relative mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4"
-        style={{ zIndex: 2 }}
-      >
-        {/* LOCATION ICON — nyelonong: setengah di action stack, setengah di footer */}
+        {/* Our Social Media */}
         <a
-          href="https://maps.app.goo.gl/LEvD7LbcxwcDfQyH6"
+          href={GOOGLE_MAPS_URL}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Buka lokasi di Google Maps"
-          className="absolute block"
-          style={{
-            right: "34px",
-            top: "-8px",
-            transform: "translateY(-50%)",
-            width: 48,
-            height: 48,
-            zIndex: 20,
-          }}
+          className="relative mt-[10px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] transition hover:brightness-110 active:scale-[0.99]"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/c96dab6a978e65b98bfd0855db347731b7e2d0db?placeholderIfAbsent=true"
-            alt="location_on"
-            className="h-full w-full object-contain"
-          />
+          <div className="flex items-center gap-3.5">
+            <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
+              <IconUsers size={24} />
+            </div>
+            <div>
+              <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
+                Our Social Media
+              </p>
+              <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
+                Stay in touch with us
+              </p>
+            </div>
+          </div>
+          <IconChevronRight size={16} className="text-[#f3e3c7]" />
         </a>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4">
         {/* Landing footer strip */}
         <div
           className="relative h-[60px] min-h-[60px] w-[384px] max-w-full bg-contain bg-center bg-no-repeat"

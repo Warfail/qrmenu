@@ -146,6 +146,17 @@ export default function MenuPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState({});
   const [productCounts, setProductCounts] = useState({});
+  const [promoEvents, setPromoEvents] = useState([]);
+  const defaultPromoEvents = [
+    "Open 24 Hours",
+    "VIP Studio",
+    "Big Screen",
+    "High Speed Wi-fi",
+    "Live Music",
+    "City View",
+    "Portable Skate Park",
+  ];
+  const bannerEvents = promoEvents.length ? promoEvents : defaultPromoEvents;
 
   const searchRef = useRef(null);
   const sectionRefs = useRef({});
@@ -167,6 +178,25 @@ export default function MenuPage() {
       .finally(() => {
         if (active) setLoading(false);
       });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Fetch running text promo dari /api/promo
+  useEffect(() => {
+    let active = true;
+    fetch("/api/promo")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (!active || !json?.text) return;
+        const events = json.text
+          .split("-")
+          .map((e) => e.trim())
+          .filter(Boolean);
+        if (events.length) setPromoEvents(events);
+      })
+      .catch(() => {});
     return () => {
       active = false;
     };

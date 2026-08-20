@@ -299,33 +299,7 @@ export default function HomePage() {
       )}
 
       {/* FOOTER */}
-      <footer
-        className="relative mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4"
-        style={{ zIndex: 2 }}
-      >
-        {/* LOCATION ICON — nyelonong: setengah di action stack, setengah di footer */}
-        <a
-          href="https://maps.app.goo.gl/LEvD7LbcxwcDfQyH6"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Buka lokasi di Google Maps"
-          className="absolute block"
-          style={{
-            right: "34px",
-            top: "-8px",
-            transform: "translateY(-50%)",
-            width: 48,
-            height: 48,
-            zIndex: 20,
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/c96dab6a978e65b98bfd0855db347731b7e2d0db?placeholderIfAbsent=true"
-            alt="location_on"
-            className="h-full w-full object-contain"
-          />
-        </a>
+      <footer className="mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4">
         {/* Landing footer strip */}
         <div
           className="relative h-[60px] min-h-[60px] w-[384px] max-w-full bg-contain bg-center bg-no-repeat"

@@ -96,8 +96,8 @@ export default function HomePage() {
           {/* Status bar */}
           <div className="absolute left-0 right-0 top-0 z-10 flex min-h-[44px] w-full" />
 
-          {/* Brand - kiri atas (posisi navbar, tidak tabrakan dengan tagline) */}
-          <div className="absolute left-[25px] top-[52px] z-10 flex h-[44px] items-start">
+          {/* Brand - kiri atas */}
+          <div className="absolute left-[25px] top-[80px] z-10 flex items-start">
             <span className="text-[16px] font-extrabold leading-[1.2] tracking-[-0.8px] text-[#f48149]">
               rooftop<span className="font-medium">fortyfive.</span>
             </span>
@@ -105,13 +105,13 @@ export default function HomePage() {
 
           {/* Tagline - kiri bawah (sejajar dengan brand, tidak terpotong) */}
           <div className="absolute bottom-[2px] left-[25px] z-10 flex w-max max-w-full flex-col items-start">
-            <span className="text-[48px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+            <span className="text-[32px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
               URBAN
             </span>
-            <span className="text-[48px] font-medium leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+            <span className="text-[32px] font-medium leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
               SOCIETY
             </span>
-            <span className="text-[48px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+            <span className="text-[32px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
               STUDIO
             </span>
           </div>
@@ -120,7 +120,7 @@ export default function HomePage() {
         {/* LIVE BANNER (running text, tiap event diawali pulse indicator) */}
         <div className="mt-[22px] flex min-h-[38px] w-full items-center overflow-hidden bg-[#f48149] px-6 pb-[16px] pt-[13px]">
           <div className="relative w-full min-w-0 overflow-hidden">
-            <div className="animate-marquee flex min-w-max whitespace-nowrap text-[12px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
+            <div className="animate-marquee flex min-w-max whitespace-nowrap text-[10px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
               {[0, 1].map((copy) => (
                 <span key={copy} className="flex shrink-0 items-center">
                   {LIVE_BANNER_EVENTS.map((evt, i) => (
@@ -299,33 +299,7 @@ export default function HomePage() {
       )}
 
       {/* FOOTER */}
-      <footer
-        className="relative mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4"
-        style={{ zIndex: 2 }}
-      >
-        {/* LOCATION ICON — nyelonong: setengah di action stack, setengah di footer */}
-        <a
-          href="https://maps.app.goo.gl/LEvD7LbcxwcDfQyH6"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Buka lokasi di Google Maps"
-          className="absolute block"
-          style={{
-            right: "34px",
-            top: "-8px",
-            transform: "translateY(-50%)",
-            width: 48,
-            height: 48,
-            zIndex: 20,
-          }}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://api.builder.io/api/v1/image/assets/TEMP/c96dab6a978e65b98bfd0855db347731b7e2d0db?placeholderIfAbsent=true"
-            alt="location_on"
-            className="h-full w-full object-contain"
-          />
-        </a>
+      <footer className="mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4">
         {/* Landing footer strip */}
         <div
           className="relative h-[60px] min-h-[60px] w-[384px] max-w-full bg-contain bg-center bg-no-repeat"

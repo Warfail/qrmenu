@@ -146,6 +146,20 @@ export default function MenuPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState({});
   const [productCounts, setProductCounts] = useState({});
+  const [promoEvents, setPromoEvents] = useState([]);
+  const defaultPromoEvents = [
+    "Open 24 Hours",
+    "VIP Studio",
+    "Big Screen",
+    "High Speed Wi-fi",
+    "Live Music",
+    "City View",
+    "Portable Skate Park",
+  ];
+  const bannerEvents = promoEvents.length ? promoEvents : defaultPromoEvents;
+  const [expandedGroups, setExpandedGroups] = useState({});
+  const [productCounts, setProductCounts] = useState({});
+  const [promoEvents, setPromoEvents] = useState([]);
 
   const searchRef = useRef(null);
   const sectionRefs = useRef({});

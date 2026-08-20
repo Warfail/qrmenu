@@ -37,23 +37,6 @@ const DISPLAY_ORDER = [
   "ROKOK & ADD-ONS",
 ];
 
-// Urutan kategori ASLI database saat tampil di "ALL" (sidebar tetap pakai display)
-const DB_CATEGORY_ORDER = [
-  "HEAVYWEIGHT CHAMPIONS",
-  "CARBOHYDRATE BOOSTERS",
-  "THE MARINE TOURNAMENT",
-  "TACTICAL RECHARGE & RECOVERY",
-  "HALF-TIME BITES & SNACK LEAGUE",
-  "THE ADDITIONAL PLAYERS",
-  "CAFFEINE INJECTORS",
-  "CLUTCH PERFORMANCE",
-  "ENDURANCE LAB & HYPERDRIVE",
-  "FLUID HYDRATION & REFRESHER",
-  "POST-MATCH HEALING",
-  "THE CELEBRATION",
-  "Rokok",
-];
-
 // Grup sidebar (Tree/Accordion)
 const SIDEBAR_GROUPS = [
   {
@@ -224,46 +207,6 @@ export default function MenuPage() {
     [groupedByDisplay]
   );
 
-  // Kelompokkan produk per kategori ASLI database (untuk render "ALL")
-  const groupedByDb = useMemo(() => {
-    const groups = {};
-    for (const p of allProducts) {
-      const cat = p.category || "LAINNYA";
-      const base = baseName(p.name);
-      const isHot = p.name.endsWith(" Hot");
-      const isIce = p.name.endsWith(" Ice");
-      if (!groups[cat]) groups[cat] = new Map();
-      if (!groups[cat].has(base)) {
-        groups[cat].set(base, {
-          id: `${cat}::${base}`,
-          name: base,
-          category: cat,
-          code: p.code ? p.code.replace(/-(HOT|ICE)$/, "") : "",
-          price: p.price,
-          variants: null,
-        });
-      }
-      const item = groups[cat].get(base);
-      if (isHot || isIce) {
-        item.variants = item.variants || {};
-        item.variants[isHot ? "HOT" : "ICE"] = {
-          id: p.id,
-          name: p.name,
-          code: p.code,
-        };
-      } else if (!item.variants) {
-        item.variants = null;
-      }
-    }
-    const out = {};
-    for (const [cat, map] of Object.entries(groups)) {
-      out[cat] = [...map.values()].sort((a, b) =>
-        a.name.localeCompare(b.name)
-      );
-    }
-    return out;
-  }, [allProducts]);
-
   // Filter hasil berdasarkan search (client-side)
   const filteredGroups = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -276,28 +219,14 @@ export default function MenuPage() {
     return out;
   }, [groupedByDisplay, search]);
 
-  // Filter search untuk grouping kategori asli DB
-  const filteredDbGroups = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return groupedByDb;
-    const out = {};
-    for (const [cat, items] of Object.entries(groupedByDb)) {
-      const matched = items.filter((p) => p.name.toLowerCase().includes(q));
-      if (matched.length) out[cat] = matched;
-    }
-    return out;
-  }, [groupedByDb, search]);
-
   const shownCategories = useMemo(() => {
     if (activeCategory === "ALL") {
-      // "ALL" memakai urutan kategori ASLI database
-      return DB_CATEGORY_ORDER.filter((c) => (filteredDbGroups[c]?.length ?? 0) > 0);
+      return visibleCategories.filter((c) => (filteredGroups[c]?.length ?? 0) > 0);
     }
-    // Sidebar memilih display category
     return (filteredGroups[activeCategory]?.length ?? 0) > 0
       ? [activeCategory]
       : [];
-  }, [activeCategory, filteredDbGroups, filteredGroups]);
+  }, [activeCategory, visibleCategories, filteredGroups]);
 
   const cartCount = useMemo(
     () => Object.values(cart).reduce((sum, item) => sum + item.qty, 0),
@@ -370,9 +299,9 @@ export default function MenuPage() {
               <IconArrowLeft size={20} className="text-[#f3e3c7]" />
             </button>
             <div>
-              <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
+              <h1 className="text-[17px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.85px]">
                 Menu Selection
-              </p>
+              </h1>
               <p className="text-[10px] font-medium text-[#f48149] [letter-spacing:-0.5px]">
                 rooftop<span className="font-medium">fortyfive.</span>
               </p>
@@ -435,22 +364,19 @@ export default function MenuPage() {
           <div className="space-y-8 px-6">
             {shownCategories.map((cat) => (
               <section key={cat} ref={(el) => (sectionRefs.current[cat] = el)}>
-                {/* Category Header */}
+                {/* Category Header (display name) */}
                 <div className="mb-3 flex items-center justify-between border-b border-[#2a2a35] pb-2">
                   <h2 className="text-[12px] font-extrabold uppercase tracking-wide text-[#f3e3c7] [letter-spacing:-0.6px]">
                     {cat}
                   </h2>
                   <span className="text-[10px] font-medium text-zinc-400 [letter-spacing:-0.5px]">
-                    {(activeCategory === "ALL"
-                      ? filteredDbGroups[cat]?.length ?? 0
-                      : productCounts[cat] ?? 0
-                    )} items
+                    {productCounts[cat] ?? filteredGroups[cat]?.length ?? 0} items
                   </span>
                 </div>
 
                 {/* Items */}
                 <div className="space-y-2.5">
-                  {(activeCategory === "ALL" ? filteredDbGroups[cat] : filteredGroups[cat]).map((product) => {
+                  {filteredGroups[cat].map((product) => {
                     const inCart = cart[product.id];
                     return (
                       <div
@@ -510,7 +436,7 @@ export default function MenuPage() {
 
         {/* FLOATING CART DOCK */}
         {cartCount > 0 && (
-          <div className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[480px] border-t border-[#2a2a35] bg-[#0a0a0c]/95 backdrop-blur-md">
+          <div className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[480px] border-t border-[#2a2a35] bg-[#0a0a0c]/90 backdrop-blur">
             <div className="px-6 pb-4 pt-4">
               <button
                 type="button"
@@ -612,47 +538,23 @@ export default function MenuPage() {
 
                       {isOpen && (
                         <div className="ml-3 mt-1 space-y-0.5 border-l border-[#2a2a35] pl-3">
-                          {group.categories
-                            .filter((c) => (productCounts[c] ?? 0) > 0)
-                            .map((cat) => (
-                              <button
-                                key={cat}
-                                type="button"
-                                onClick={() => selectCategory(cat)}
-                                className={`flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-[12px] font-medium transition hover:bg-[#2a2a2a] [letter-spacing:-0.6px] ${
-                                  activeCategory === cat
-                                    ? "font-extrabold text-[#f48149]"
-                                    : "text-zinc-400"
-                                }`}
-                              >
-                                <span className="truncate">{cat}</span>
-                                <span className="shrink-0 text-[10px] text-zinc-500">
-                                  {productCounts[cat] ?? 0}
-                                </span>
-                              </button>
-                            ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+              })}
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* ORDER SHEET (Cart → Confirm → Receipt) */}
-        <OrderSheet
-          open={showOrder}
-          onClose={() => setShowOrder(false)}
-          cartItems={cartItems}
-          onAdd={addToCart}
-          onRemove={removeFromCart}
-          onClear={clearCart}
-          setVariant={setVariant}
-          subtotal={cartTotal}
-        />
-      </div>
+      {/* ORDER SHEET (Cart → Confirm → Receipt) */}
+      <OrderSheet
+        open={showOrder}
+        onClose={() => setShowOrder(false)}
+        cartItems={cartItems}
+        onAdd={addToCart}
+        onRemove={removeFromCart}
+        onClear={clearCart}
+        setVariant={setVariant}
+        subtotal={cartTotal}
+      />
     </main>
   );
 }
