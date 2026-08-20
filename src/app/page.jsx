@@ -78,8 +78,8 @@ export default function HomePage() {
             </span>
           </div>
 
-          {/* Tagline - kanan bawah */}
-          <div className="absolute bottom-[2px] right-[179px] z-10 flex w-[198px] flex-col items-start">
+          {/* Tagline - kanan bawah (tidak terpotong di layar sempit) */}
+          <div className="absolute bottom-[2px] right-[16px] z-10 flex w-max max-w-full flex-col items-start">
             <span className="text-[32px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
               URBAN
             </span>
