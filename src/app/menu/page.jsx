@@ -77,16 +77,19 @@ const SIDEBAR_GROUPS = [
   },
 ];
 
-// Ambil varian HOT/ICE dari nama produk (karena API hanya mengembalikan field dasar)
-function getVariant(name) {
-  if (name.endsWith(" Hot")) return "HOT";
-  if (name.endsWith(" Ice")) return "ICE";
-  return null;
+// Nama dasar tanpa suffix varian
+function baseName(name) {
+  return name.replace(/ Hot$/, "").replace(/ Ice$/, "");
+}
+
+// Apakah nama produk mengandung varian HOT/ICE
+function hasVariantName(name) {
+  return name.endsWith(" Hot") || name.endsWith(" Ice");
 }
 
 export default function MenuPage() {
   const router = useRouter();
-  const { cart, addToCart, removeFromCart, clearCart } = useCart();
+  const { cart, addToCart, removeFromCart, setVariant, clearCart } = useCart();
 
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -131,17 +134,42 @@ export default function MenuPage() {
     };
   }, []);
 
-  // Kelompokkan produk berdasarkan kategori, urut A-Z per kategori
+  // Kelompokkan produk per kategori: gabung varian Hot/Ice jadi satu item (nama dasar)
   const groupedByCategory = useMemo(() => {
     const groups = {};
     for (const p of allProducts) {
-      if (!groups[p.category]) groups[p.category] = [];
-      groups[p.category].push(p);
+      const cat = p.category;
+      const base = baseName(p.name);
+      const isHot = p.name.endsWith(" Hot");
+      const isIce = p.name.endsWith(" Ice");
+      if (!groups[cat]) groups[cat] = new Map();
+      if (!groups[cat].has(base)) {
+        groups[cat].set(base, {
+          id: `${cat}::${base}`, // key stabil untuk cart (bukan id produk varian)
+          name: base,
+          category: cat,
+          code: p.code ? p.code.replace(/-(HOT|ICE)$/, "") : "",
+          price: p.price,
+          variants: null, // null = tanpa varian
+        });
+      }
+      const item = groups[cat].get(base);
+      if (isHot || isIce) {
+        item.variants = item.variants || {};
+        item.variants[isHot ? "HOT" : "ICE"] = {
+          id: p.id,
+          name: p.name,
+          code: p.code,
+        };
+      } else if (!item.variants) {
+        item.variants = null;
+      }
     }
-    for (const key of Object.keys(groups)) {
-      groups[key].sort((a, b) => a.name.localeCompare(b.name));
+    const out = {};
+    for (const [cat, map] of Object.entries(groups)) {
+      out[cat] = [...map.values()].sort((a, b) => a.name.localeCompare(b.name));
     }
-    return groups;
+    return out;
   }, [allProducts]);
 
   // Kategori yang tampil (urut sesuai CATEGORY_ORDER)
@@ -302,29 +330,15 @@ export default function MenuPage() {
               <div className="space-y-2.5">
                 {filteredGroups[cat].map((product) => {
                   const inCart = cart[product.id];
-                  const variant = getVariant(product.name);
                   return (
                     <div
                       key={product.id}
                       className="flex w-full items-center gap-3 rounded-2xl border border-[#2a2a35] bg-[#18181e] px-3.5 py-3"
                     >
                       <div className="flex min-w-0 flex-1 flex-col">
-                        <div className="flex items-center gap-2">
-                          <p className="min-w-0 truncate text-[14px] font-semibold text-white">
-                            {product.name}
-                          </p>
-                          {variant && (
-                            <span
-                              className={`shrink-0 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${
-                                variant === "HOT"
-                                  ? "bg-orange-500/15 text-orange-500"
-                                  : "bg-blue-500/15 text-blue-400"
-                              }`}
-                            >
-                              {variant}
-                            </span>
-                          )}
-                        </div>
+                        <p className="min-w-0 truncate text-[14px] font-semibold text-white">
+                          {product.name}
+                        </p>
                         <div className="mt-1 flex w-full items-center justify-between gap-3">
                           <p className="text-[15px] font-bold text-orange-500">
                             {formatIDR(product.price)}
@@ -507,6 +521,7 @@ export default function MenuPage() {
         onAdd={addToCart}
         onRemove={removeFromCart}
         onClear={clearCart}
+        setVariant={setVariant}
         subtotal={cartTotal}
       />
     </main>

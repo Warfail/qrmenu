@@ -14,11 +14,9 @@ const CART_STORAGE_KEY = "rooftop45_cart";
 
 const CartContext = createContext(null);
 
-// Ambil varian HOT/ICE dari nama produk
-function getVariant(name) {
-  if (name.endsWith(" Hot")) return "HOT";
-  if (name.endsWith(" Ice")) return "ICE";
-  return null;
+// Nama dasar tanpa suffix varian
+function baseName(name) {
+  return String(name || "").replace(/ Hot$/, "").replace(/ Ice$/, "");
 }
 
 export function CartProvider({ children }) {
@@ -37,22 +35,23 @@ export function CartProvider({ children }) {
           const cleaned = {};
           let count = 0;
           for (const [id, item] of Object.entries(parsed)) {
-            if (item && item.product && item.product.id && item.qty > 0) {
-              const name = item.product.name || "";
-              cleaned[id] = {
-                product: {
-                  id: item.product.id,
-                  name,
-                  category: item.product.category || "",
-                  code: item.product.code || "",
-                  price: Number(item.product.price) || 0,
-                  stock: Number(item.product.stock) || 0,
-                },
-                variant: item.variant || getVariant(name),
-                qty: item.qty,
-              };
-              count += item.qty;
-            }
+              if (item && item.product && item.product.id && item.qty > 0) {
+                const name = item.product.name || "";
+                cleaned[id] = {
+                  product: {
+                    id: item.product.id,
+                    name: baseName(item.product.name),
+                    category: item.product.category || "",
+                    code: item.product.code || "",
+                    price: Number(item.product.price) || 0,
+                    hasVariants: !!item.product.hasVariants,
+                    variants: item.product.variants || {},
+                  },
+                  variant: item.variant || null,
+                  qty: item.qty,
+                };
+                count += item.qty;
+              }
           }
           if (count > 0) {
             setCart(cleaned);
@@ -85,11 +84,16 @@ export function CartProvider({ children }) {
   const addToCart = useCallback((product) => {
     setCart((prev) => {
       const existing = prev[product.id];
+      // Default varian: HOT jika tersedia, selain itu ICE (kalau cuma Ice), selain itu null
+      let variant = null;
+      if (product.variants) {
+        variant = product.variants.HOT ? "HOT" : product.variants.ICE ? "ICE" : null;
+      }
       return {
         ...prev,
         [product.id]: {
           product,
-          variant: getVariant(product.name),
+          variant,
           qty: existing ? existing.qty + 1 : 1,
         },
       };
@@ -109,6 +113,29 @@ export function CartProvider({ children }) {
     });
   }, []);
 
+  // Ganti varian HOT/ICE item di cart (sebelum confirm order)
+  const setVariant = useCallback((baseId, variant) => {
+    setCart((prev) => {
+      const existing = prev[baseId];
+      if (!existing) return prev;
+      const v = existing.product.variants?.[variant];
+      if (!v) return prev;
+      return {
+        ...prev,
+        [baseId]: {
+          ...existing,
+          product: {
+            ...existing.product,
+            // update id/code ke id varian terkait (untuk konsistensi struk)
+            metaId: v.id,
+            code: v.code,
+          },
+          variant,
+        },
+      };
+    });
+  }, []);
+
   // 3. Clear cart setelah checkout + hapus dari localStorage
   const clearCart = useCallback(() => {
     setCart({});
@@ -120,8 +147,8 @@ export function CartProvider({ children }) {
   }, []);
 
   const value = useMemo(
-    () => ({ cart, addToCart, removeFromCart, clearCart }),
-    [cart, addToCart, removeFromCart, clearCart]
+    () => ({ cart, addToCart, removeFromCart, setVariant, clearCart }),
+    [cart, addToCart, removeFromCart, setVariant, clearCart]
   );
 
   return (

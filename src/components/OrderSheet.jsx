@@ -25,6 +25,7 @@ export default function OrderSheet({
   onAdd,
   onRemove,
   onClear,
+  setVariant,
   subtotal,
 }) {
   const [step, setStep] = useState("cart"); // "cart" | "receipt"
@@ -105,16 +106,30 @@ export default function OrderSheet({
                       <p className="text-sm font-semibold text-white">
                         {displayName}
                       </p>
-                      {variant && (
-                        <span
-                          className={`mt-1 inline-block rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${
-                            variant === "HOT"
-                              ? "bg-orange-500/15 text-orange-500"
-                              : "bg-blue-500/15 text-blue-400"
-                          }`}
-                        >
-                          {variant === "HOT" ? "Hot" : "Ice"}
-                        </span>
+                      {product.hasVariants && product.variants && (
+                        <div className="mt-1.5 inline-flex items-center gap-1 rounded-lg border border-[#2a2a35] bg-[#22222b] p-0.5">
+                          {["HOT", "ICE"].map((v) => {
+                            const available = !!product.variants[v];
+                            if (!available) return null;
+                            const active = variant === v;
+                            return (
+                              <button
+                                key={v}
+                                type="button"
+                                onClick={() =>
+                                  setVariant && setVariant(product.id, v)
+                                }
+                                className={`rounded-md px-3 py-1 text-[11px] font-bold uppercase tracking-wide transition ${
+                                  active
+                                    ? "bg-orange-500 text-white"
+                                    : "text-zinc-400 hover:text-white"
+                                }`}
+                              >
+                                {v === "HOT" ? "Hot" : "Ice"}
+                              </button>
+                            );
+                          })}
+                        </div>
                       )}
                     </div>
                     <p className="shrink-0 text-sm font-bold text-orange-500">
