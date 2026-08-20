@@ -327,8 +327,12 @@ export default function HomePage() {
         style={{ zIndex: 2 }}
       >
         {/* LOCATION ICON — nyelonong: setengah di action stack, setengah di footer */}
-        <div
-          className="absolute"
+        <a
+          href="https://maps.app.goo.gl/LEvD7LbcxwcDfQyH6"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Buka lokasi di Google Maps"
+          className="absolute block"
           style={{
             right: "34px",
             top: "-8px",
@@ -344,7 +348,7 @@ export default function HomePage() {
             alt="location_on"
             className="h-full w-full object-contain"
           />
-        </div>
+        </a>
         {/* Landing footer strip */}
         <div
           className="relative h-[60px] min-h-[60px] w-[384px] max-w-full bg-contain bg-center bg-no-repeat"
