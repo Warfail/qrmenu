@@ -299,9 +299,9 @@ export default function MenuPage() {
               <IconArrowLeft size={20} className="text-[#f3e3c7]" />
             </button>
             <div>
-              <h1 className="text-[17px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.85px]">
+              <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
                 Menu Selection
-              </h1>
+              </p>
               <p className="text-[10px] font-medium text-[#f48149] [letter-spacing:-0.5px]">
                 rooftop<span className="font-medium">fortyfive.</span>
               </p>
@@ -436,7 +436,7 @@ export default function MenuPage() {
 
         {/* FLOATING CART DOCK */}
         {cartCount > 0 && (
-          <div className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[480px] border-t border-[#2a2a35] bg-[#0a0a0c]/90 backdrop-blur">
+          <div className="fixed inset-x-0 bottom-0 z-40 mx-auto w-full max-w-[480px] border-t border-[#2a2a35] bg-[#0a0a0c]/95 backdrop-blur-md">
             <div className="px-6 pb-4 pt-4">
               <button
                 type="button"
