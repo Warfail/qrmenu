@@ -17,10 +17,10 @@ export default function GuestRatingsModal({ open, onClose, googlePlaceId }) {
       >
         <div className="flex items-start justify-between p-7 pb-0">
           <div>
-            <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-orange-500">
+            <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#f48149]">
               Guest Ratings
             </p>
-            <h2 className="text-2xl font-bold leading-tight text-white">
+            <h2 className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
               What Our Guests Say
             </h2>
           </div>

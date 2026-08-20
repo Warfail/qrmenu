@@ -36,7 +36,7 @@ export function Stars({ rating = 5, size = 16 }) {
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map((i) =>
         i <= rating ? (
-          <IconStarFilled key={i} size={size} className="text-orange-500" />
+          <IconStarFilled key={i} size={size} className="text-[#f48149]" />
         ) : (
           <IconStar key={i} size={size} className="text-[#4b4b4b]" />
         )
@@ -55,7 +55,7 @@ function Avatar({ author }) {
     .toUpperCase();
 
   return (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-orange-500/15 text-sm font-bold text-orange-500">
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f48149]/15 text-sm font-bold text-[#f48149]">
       {initials}
     </div>
   );
@@ -73,7 +73,7 @@ export default function GoogleReviews({ limit = 3 }) {
       {/* Rating summary */}
       <div className="mb-5 flex flex-col items-center rounded-2xl bg-[#18181e] p-6">
         <div className="flex items-end gap-2">
-          <span className="text-5xl font-bold leading-none text-white">
+          <span className="text-[17px] font-extrabold leading-none text-[#f3e3c7] [letter-spacing:-0.85px]">
             {average}
           </span>
           <span className="mb-1 text-sm text-zinc-400">/ 5</span>
@@ -81,7 +81,7 @@ export default function GoogleReviews({ limit = 3 }) {
         <div className="mt-3">
           <Stars rating={Number(average)} size={20} />
         </div>
-        <p className="mt-3 text-center text-xs text-zinc-400">
+        <p className="mt-3 text-center text-[12px] font-medium text-zinc-400 [letter-spacing:-0.5px]">
           Rated {average} out of 5 · from {total} reviews
         </p>
       </div>
@@ -93,7 +93,7 @@ export default function GoogleReviews({ limit = 3 }) {
             <div className="flex items-center gap-3">
               <Avatar author={review.author} />
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-white">
+                <p className="truncate text-[17px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.85px]">
                   {review.author}
                 </p>
                 <div className="mt-0.5 flex items-center gap-2">
@@ -104,7 +104,7 @@ export default function GoogleReviews({ limit = 3 }) {
                 </div>
               </div>
             </div>
-            <p className="mt-3 text-[13px] leading-relaxed text-zinc-300">
+            <p className="mt-3 text-[13px] leading-relaxed text-[#f3e3c7]">
               {review.text}
             </p>
           </div>
@@ -116,9 +116,9 @@ export default function GoogleReviews({ limit = 3 }) {
         href={mapsUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-orange-500/40 bg-orange-500/10 px-4 py-3 text-sm font-semibold text-orange-500 transition hover:bg-orange-500/20"
+        className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#f48149] px-4 py-3 text-[17px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.85px] transition hover:brightness-110 active:scale-[0.99]"
       >
-        Tulis Review
+        Write a Review
         <IconExternalLink size={16} />
       </a>
     </div>

@@ -58,13 +58,13 @@ export default function FeedbackModal({ open, onClose, whatsappNumber }) {
           <IconX size={16} />
         </button>
 
-        <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-orange-500">
+        <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#f48149]">
           Rooftop45 Experience
         </p>
-        <h2 className="mb-2 text-2xl font-bold leading-tight text-white">
+        <h2 className="mb-2 text-[24px] font-bold leading-tight text-[#f3e3c7]">
           Share Your Feedback
         </h2>
-        <p className="mb-6 text-[13px] leading-relaxed text-gray-400">
+        <p className="mb-6 text-[13px] leading-relaxed text-[#9ca3af]">
           We highly value your opinion. Let us know how we can make your next
           skyline visit even more perfect.
         </p>
@@ -93,8 +93,8 @@ export default function FeedbackModal({ open, onClose, whatsappNumber }) {
                     size={32}
                     className={
                       active
-                        ? "text-orange-500"
-                        : "text-[#4b4b4b] transition hover:text-orange-500"
+                        ? "text-[#f48149]"
+                        : "text-[#4b4b4b] transition hover:text-[#f48149]"
                     }
                   />
                 </button>
@@ -103,7 +103,7 @@ export default function FeedbackModal({ open, onClose, whatsappNumber }) {
           </div>
 
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-gray-400">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#9ca3af]">
               Feedback Message
             </p>
             <p className="text-xs text-gray-400">Optional</p>
@@ -114,14 +114,14 @@ export default function FeedbackModal({ open, onClose, whatsappNumber }) {
             onChange={(e) => setMessage(e.target.value)}
             placeholder="Tell us about your experience..."
             rows={4}
-            className="mb-5 h-[100px] w-full resize-none rounded-xl bg-[#2a2a2a] p-4 text-sm text-gray-300 placeholder-gray-500 outline-none transition focus:ring-2 focus:ring-orange-500/50"
+            className="mb-5 h-[100px] w-full resize-none rounded-xl bg-[#2a2a2a] p-4 text-sm text-[#f3e3c7] placeholder-gray-500 outline-none transition focus:ring-2 focus:ring-[#f48149]/50"
           />
 
           {error && <p className="mb-3 text-center text-xs text-red-400">{error}</p>}
 
           <button
             type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-orange-500 px-4 py-4 text-base font-semibold text-white transition hover:bg-orange-600 active:scale-[0.99]"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#f48149] px-4 py-4 text-[17px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.85px] transition hover:brightness-110 active:scale-[0.99]"
           >
             <IconBrandWhatsapp size={20} />
             Submit Feedback

@@ -51,7 +51,7 @@ export default function WhatsAppForm({ whatsappNumber }) {
       {error && <p className="mt-2 text-left text-sm text-red-600">{error}</p>}
       <button
         type="submit"
-        className="mt-3 w-full rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700"
+        className="mt-3 w-full rounded-xl bg-[#f48149] px-4 py-2.5 text-sm font-bold text-[#f3e3c7] transition hover:brightness-110"
       >
         Kirim ke WhatsApp
       </button>
