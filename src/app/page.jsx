@@ -322,53 +322,10 @@ export default function HomePage() {
       )}
 
       {/* FOOTER */}
-      <footer className="mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-6 py-4">
-        {/* Jam operasional + Alamat dengan ikon pin yang pastii tampil */}
-        <div className="flex w-full flex-col items-center gap-1">
-          <div className="flex items-center gap-1.5">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#f48149"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4 shrink-0"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-            <span className="text-[13px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.5px]">
-              Open Daily: 4:00 PM — 2:00 AM
-            </span>
-          </div>
-          <a
-            href={GOOGLE_MAPS_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-1.5"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#f48149"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4 shrink-0"
-            >
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-              <circle cx="12" cy="10" r="3" />
-            </svg>
-            <span className="text-center text-[11px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px] transition hover:text-[#f48149]">
-              45th Floor, Metropolis Tower Plaza
-            </span>
-          </a>
-        </div>
-
+      <footer className="mt-[18px] flex w-full flex-col items-center justify-center bg-[#0a0a0c] px-[9px] py-4">
         {/* Landing footer strip */}
         <div
-          className="relative mt-3 h-[60px] min-h-[60px] w-[384px] max-w-full bg-contain bg-center bg-no-repeat"
+          className="relative h-[60px] min-h-[60px] w-[384px] max-w-full bg-contain bg-center bg-no-repeat"
           style={{
             backgroundImage:
               "url(https://api.builder.io/api/v1/image/assets/TEMP/51bbaf151f0379c20cca4c73d269058c5738f2a3?placeholderIfAbsent=true)",
