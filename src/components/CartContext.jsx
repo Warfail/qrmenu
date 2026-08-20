@@ -36,16 +36,26 @@ export function CartProvider({ children }) {
           let count = 0;
           for (const [id, item] of Object.entries(parsed)) {
               if (item && item.product && item.product.id && item.qty > 0) {
-                const name = item.product.name || "";
+                const rawName = String(item.product.name || "");
+                const name = baseName(rawName);
+                let variants = item.product.variants || {};
+                // Rekonstruksi varian dari cart lama (nama ber-suffix Hot/Ice)
+                if (Object.keys(variants).length === 0) {
+                  if (rawName.endsWith(" Hot")) {
+                    variants = { HOT: { id, name: rawName, code: item.product.code || "" } };
+                  } else if (rawName.endsWith(" Ice")) {
+                    variants = { ICE: { id, name: rawName, code: item.product.code || "" } };
+                  }
+                }
                 cleaned[id] = {
                   product: {
                     id: item.product.id,
-                    name: baseName(item.product.name),
+                    name,
                     category: item.product.category || "",
                     code: item.product.code || "",
                     price: Number(item.product.price) || 0,
                     hasVariants: !!item.product.hasVariants,
-                    variants: item.product.variants || {},
+                    variants,
                   },
                   variant: item.variant || null,
                   qty: item.qty,

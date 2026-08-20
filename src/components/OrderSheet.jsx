@@ -106,7 +106,8 @@ export default function OrderSheet({
                       <p className="text-sm font-semibold text-white">
                         {displayName}
                       </p>
-                      {product.hasVariants && product.variants && (
+                      {product.variants &&
+                        Object.keys(product.variants).length > 0 && (
                         <div className="mt-1.5 inline-flex items-center gap-1 rounded-lg border border-[#2a2a35] bg-[#22222b] p-0.5">
                           {["HOT", "ICE"].map((v) => {
                             const available = !!product.variants[v];
