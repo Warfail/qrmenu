@@ -12,6 +12,8 @@ import {
   IconBrandWhatsapp,
   IconX,
 } from "@tabler/icons-react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 import FeedbackModal from "@/components/FeedbackModal";
 import GuestRatingsModal from "@/components/GuestRatingsModal";
 
@@ -103,13 +105,13 @@ export default function HomePage() {
 
           {/* Tagline - kiri bawah (sejajar dengan brand, tidak terpotong) */}
           <div className="absolute bottom-[2px] left-[25px] z-10 flex w-max max-w-full flex-col items-start">
-            <span className="text-[32px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+            <span className="text-[48px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
               URBAN
             </span>
-            <span className="text-[32px] font-medium leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+            <span className="text-[48px] font-medium leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
               SOCIETY
             </span>
-            <span className="text-[32px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
+            <span className="text-[48px] font-extrabold leading-[1.05] tracking-[-2.4px] text-[#f3e3c7]">
               STUDIO
             </span>
           </div>
@@ -118,7 +120,7 @@ export default function HomePage() {
         {/* LIVE BANNER (running text, tiap event diawali pulse indicator) */}
         <div className="mt-[22px] flex min-h-[38px] w-full items-center overflow-hidden bg-[#f48149] px-6 pb-[16px] pt-[13px]">
           <div className="relative w-full min-w-0 overflow-hidden">
-            <div className="animate-marquee flex min-w-max whitespace-nowrap text-[10px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
+            <div className="animate-marquee flex min-w-max whitespace-nowrap text-[12px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
               {[0, 1].map((copy) => (
                 <span key={copy} className="flex shrink-0 items-center">
                   {LIVE_BANNER_EVENTS.map((evt, i) => (
@@ -232,13 +234,9 @@ export default function HomePage() {
                 </p>
               </div>
             </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://www.vecteezy.com/vector-art/15779030-url-link-icon-vector-hyperlink-chain-website-icon-vector-isolated-on-white-background"
-              alt="url link icon"
-              width={18}
-              height={18}
-              className="h-[18px] w-[18px] shrink-0 object-contain"
+            <FontAwesomeIcon
+              icon={faLink}
+              className="h-[18px] w-[18px] shrink-0 text-[#f3e3c7]"
             />
           </button>
 
