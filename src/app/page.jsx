@@ -9,7 +9,11 @@ import {
   IconAward,
   IconMessageCircle,
   IconUsers,
-  IconChevronRight,
+  IconBrandWhatsapp,
+  IconCopy,
+  IconBrandFacebook,
+  IconBrandInstagram,
+  IconBrandTiktok,
 } from "@tabler/icons-react";
 import FeedbackModal from "@/components/FeedbackModal";
 import GuestRatingsModal from "@/components/GuestRatingsModal";
@@ -34,6 +38,28 @@ export default function HomePage() {
   });
   const [showFeedback, setShowFeedback] = useState(false);
   const [showRatings, setShowRatings] = useState(false);
+  const [showSocialMenu, setShowSocialMenu] = useState(false);
+
+  const SOCIAL_LINKS = [
+    {
+      id: "fb",
+      label: "Facebook",
+      icon: IconBrandFacebook,
+      href: "https://www.facebook.com/share/19A6JojNt5/",
+    },
+    {
+      id: "ig",
+      label: "Instagram",
+      icon: IconBrandInstagram,
+      href: "https://www.instagram.com/rooftopfortyfive_salatiga?igsh=MTRzM2w2dDRmZ2hwZA==&igsi=MTRzM2w2dDRmZ2hwZA==",
+    },
+    {
+      id: "tiktok",
+      label: "TikTok",
+      icon: IconBrandTiktok,
+      href: "https://www.tiktok.com/@rooftop45_?_r=1&_t=ZS-992nkx9TvvD",
+    },
+  ];
 
   useEffect(() => {
     let active = true;
@@ -167,7 +193,7 @@ export default function HomePage() {
           </div>
         </button>
 
-        {/* Feedback */}
+        {/* Feedback - icon kanan WhatsApp */}
         <button
           type="button"
           onClick={() => setShowFeedback(true)}
@@ -186,31 +212,52 @@ export default function HomePage() {
               </p>
             </div>
           </div>
-          <IconChevronRight size={16} className="text-[#f3e3c7]" />
+          <IconBrandWhatsapp size={20} className="text-[#f3e3c7]" />
         </button>
 
-        {/* Our Social Media */}
-        <a
-          href={GOOGLE_MAPS_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative mt-[8px] flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] transition hover:brightness-110 active:scale-[0.99]"
-        >
-          <div className="flex items-center gap-3.5">
-            <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
-              <IconUsers size={24} />
+        {/* Our Social Media - toggle dropdown */}
+        <div className="relative mt-[8px]">
+          <button
+            type="button"
+            onClick={() => setShowSocialMenu((v) => !v)}
+            className="flex w-full items-center justify-between gap-4 rounded-2xl bg-[#f48149] px-[18px] py-[18px] text-left transition hover:brightness-110 active:scale-[0.99]"
+          >
+            <div className="flex items-center gap-3.5">
+              <div className="flex h-6 w-6 items-center justify-center text-[#f3e3c7]">
+                <IconUsers size={24} />
+              </div>
+              <div>
+                <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
+                  Our Social Media
+                </p>
+                <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
+                  Stay in touch with us
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
-                Our Social Media
-              </p>
-              <p className="text-[10px] font-medium text-[#f3e3c7]/90 [letter-spacing:-0.5px]">
-                Stay in touch with us
-              </p>
+            <IconCopy size={18} className="text-[#f3e3c7]" />
+          </button>
+
+          {showSocialMenu && (
+            <div className="mt-2 flex w-full flex-col gap-1.5 rounded-2xl border border-white/[0.082] bg-[#161618] p-2">
+              {SOCIAL_LINKS.map((s) => {
+                const Icon = s.icon;
+                return (
+                  <a
+                    key={s.id}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[17px] font-extrabold text-[#f3e3c7] [letter-spacing:-0.85px] transition hover:bg-white/[0.06]"
+                  >
+                    <Icon size={20} className="shrink-0 text-[#f48149]" />
+                    {s.label}
+                  </a>
+                );
+              })}
             </div>
-          </div>
-          <IconChevronRight size={16} className="text-[#f3e3c7]" />
-        </a>
+          )}
+        </div>
       </section>
 
       {/* FOOTER */}
