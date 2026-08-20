@@ -77,3 +77,16 @@ body {
 .animate-slide-left {
   animation: slide-left 0.3s ease-out;
 }
+
+@keyframes slide-right {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-right {
+  animation: slide-right 0.3s ease-out;
+}
