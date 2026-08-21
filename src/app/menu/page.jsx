@@ -24,20 +24,6 @@ function formatIDR(value) {
   }).format(value || 0);
 }
 
-// Label kategori add-ons (frontend display only)
-const ADDONS_LABEL = "Add-ons: Rokok, Nasi Putih";
-
-// Label tampilan untuk kategori database asli (saat "ALL")
-const DB_CATEGORY_LABELS = {
-  Rokok: ADDONS_LABEL,
-  "THE ADDITIONAL PLAYERS": ADDONS_LABEL,
-};
-
-// Mapping nama kategori database asli -> label tampilan
-function getDbCategoryLabel(cat) {
-  return DB_CATEGORY_LABELS[cat] || cat;
-}
-
 // Urutan tampilan kategori (display) saat "ALL"
 const DISPLAY_ORDER = [
   "COFFEE",
@@ -48,7 +34,7 @@ const DISPLAY_ORDER = [
   "NOODLES & SOUP",
   "SEAFOOD",
   "SNACKS & SIDES",
-  ADDONS_LABEL,
+  "ROKOK & ADD-ONS",
 ];
 
 // Urutan kategori ASLI database saat tampil di "ALL" (sidebar tetap pakai display)
@@ -87,8 +73,8 @@ const SIDEBAR_GROUPS = [
   },
   {
     id: "others",
-    label: ADDONS_LABEL,
-    categories: [ADDONS_LABEL],
+    label: "Rokok & Add-ons",
+    categories: ["ROKOK & ADD-ONS"],
   },
 ];
 
@@ -141,7 +127,7 @@ function getDisplayCategory(item) {
       return "SNACKS & SIDES";
     case "Rokok":
     case "THE ADDITIONAL PLAYERS":
-      return ADDONS_LABEL;
+      return "ROKOK & ADD-ONS";
     default:
       return cat || "LAINNYA";
   }
@@ -302,41 +288,16 @@ export default function MenuPage() {
     return out;
   }, [groupedByDb, search]);
 
-  // Grup gabungan untuk mode "ALL": kategori DB dengan label tampilan sama digabung
-  const allDisplayGroups = useMemo(() => {
-    const groups = {};
-    for (const [cat, items] of Object.entries(filteredDbGroups)) {
-      const label = getDbCategoryLabel(cat);
-      if (!groups[label]) groups[label] = [];
-      groups[label].push(...items);
-    }
-    return groups;
-  }, [filteredDbGroups]);
-
-  // Urutan tampilan mode "ALL" (berdasarkan DB_CATEGORY_ORDER, label unik)
-  const allDisplayOrder = useMemo(() => {
-    const seen = new Set();
-    const order = [];
-    for (const c of DB_CATEGORY_ORDER) {
-      const label = getDbCategoryLabel(c);
-      if ((filteredDbGroups[c]?.length ?? 0) > 0 && !seen.has(label)) {
-        seen.add(label);
-        order.push(label);
-      }
-    }
-    return order;
-  }, [filteredDbGroups]);
-
   const shownCategories = useMemo(() => {
     if (activeCategory === "ALL") {
-      // "ALL" memakai urutan kategori ASLI database (label display unik)
-      return allDisplayOrder;
+      // "ALL" memakai urutan kategori ASLI database
+      return DB_CATEGORY_ORDER.filter((c) => (filteredDbGroups[c]?.length ?? 0) > 0);
     }
     // Sidebar memilih display category
     return (filteredGroups[activeCategory]?.length ?? 0) > 0
       ? [activeCategory]
       : [];
-  }, [activeCategory, allDisplayOrder, filteredGroups]);
+  }, [activeCategory, filteredDbGroups, filteredGroups]);
 
   const cartCount = useMemo(
     () => Object.values(cart).reduce((sum, item) => sum + item.qty, 0),
@@ -398,7 +359,7 @@ export default function MenuPage() {
 
       <div className="relative z-10 flex flex-1 flex-col">
         {/* TOP NAVBAR */}
-        <header className="sticky top-0 z-40 flex w-full items-center justify-between bg-[#0a0a0c]/85 px-6 py-3 backdrop-blur-md">
+        <header className="flex w-full items-center justify-between px-6 py-3">
           <div className="flex items-center gap-4">
             <button
               type="button"
@@ -481,7 +442,7 @@ export default function MenuPage() {
                   </h2>
                   <span className="text-[10px] font-medium text-zinc-400 [letter-spacing:-0.5px]">
                     {(activeCategory === "ALL"
-                      ? allDisplayGroups[cat]?.length ?? 0
+                      ? filteredDbGroups[cat]?.length ?? 0
                       : productCounts[cat] ?? 0
                     )} items
                   </span>
@@ -489,7 +450,7 @@ export default function MenuPage() {
 
                 {/* Items */}
                 <div className="space-y-2.5">
-                  {(activeCategory === "ALL" ? allDisplayGroups[cat] : filteredGroups[cat]).map((product) => {
+                  {(activeCategory === "ALL" ? filteredDbGroups[cat] : filteredGroups[cat]).map((product) => {
                     const inCart = cart[product.id];
                     return (
                       <div
