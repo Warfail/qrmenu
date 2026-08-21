@@ -54,6 +54,10 @@ const DB_CATEGORY_ORDER = [
   "Rokok",
 ];
 
+// Sub-kategori PELENGKAP
+const NASI_PUTIH_CATEGORY = "Nasi Putih";
+const ROKOK_CATEGORY = "Rokok";
+
 // Grup sidebar (Tree/Accordion)
 const SIDEBAR_GROUPS = [
   {
@@ -73,8 +77,8 @@ const SIDEBAR_GROUPS = [
   },
   {
     id: "others",
-    label: "Rokok & Add-ons",
-    categories: ["ROKOK & ADD-ONS"],
+    label: "PELENGKAP",
+    categories: [NASI_PUTIH_CATEGORY, ROKOK_CATEGORY],
   },
 ];
 
@@ -126,8 +130,9 @@ function getDisplayCategory(item) {
     case "HALF-TIME BITES & SNACK LEAGUE":
       return "SNACKS & SIDES";
     case "Rokok":
+      return "Rokok";
     case "THE ADDITIONAL PLAYERS":
-      return "ROKOK & ADD-ONS";
+      return "Nasi Putih";
     default:
       return cat || "LAINNYA";
   }
