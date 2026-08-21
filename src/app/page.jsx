@@ -20,19 +20,17 @@ import GuestRatingsModal from "@/components/GuestRatingsModal";
 const GOOGLE_MAPS_URL =
   "https://www.google.com/maps/place/Rooftop+Forty+Five/@-7.3370042,110.4879377,15z/data=!4m6!3m5!1s0x2e7a79339f145283:0x26fa97d90cd2e8d2!8m2!3d-7.3371324!4d110.4982667!16s%2Fg%2F11njpl__k4?entry=ttu&g_ep=EgoyMDI2MDgxMi4wIKXMDSoASAFQAw%3D%3D";
 
-const DEFAULT_PROMO_TEXT =
-  "Open 24 Hours - VIP Studio - Big Screen - High Speed Wi-fi - Live Music - City View - Portable Skate Park";
+const LIVE_BANNER_EVENTS = [
+  "Open 24 Hours",
+  "VIP Studio",
+  "Big Screen",
+  "High Speed Wi-fi",
+  "Live Music",
+  "City View",
+  "Portable Skate Park",
+];
 
 export default function HomePage() {
-  const [promoEvents, setPromoEvents] = useState([
-    "Open 24 Hours",
-    "VIP Studio",
-    "Big Screen",
-    "High Speed Wi-fi",
-    "Live Music",
-    "City View",
-    "Portable Skate Park",
-  ]);
   const [settings, setSettings] = useState({
     whatsappNumber: "62895634120999",
     googlePlaceId: "",
@@ -74,27 +72,6 @@ export default function HomePage() {
             googlePlaceId: json.settings.googlePlaceId || prev.googlePlaceId,
           }));
         }
-      })
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  // Fetch promo running text dari /api/promo (fallback: teks default)
-  useEffect(() => {
-    let active = true;
-    fetch("/api/promo")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((json) => {
-        if (!active) return;
-        const text = json?.text?.trim();
-        if (!text) return; // promo kosong → pakai default
-        const events = text
-          .split(/\s*[-●]\s*/)
-          .map((e) => e.trim())
-          .filter(Boolean);
-        if (events.length) setPromoEvents(events);
       })
       .catch(() => {});
     return () => {
@@ -146,7 +123,7 @@ export default function HomePage() {
             <div className="animate-marquee flex min-w-max whitespace-nowrap text-[12px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
               {[0, 1].map((copy) => (
                 <span key={copy} className="flex shrink-0 items-center">
-                  {promoEvents.map((evt, i) => (
+                  {LIVE_BANNER_EVENTS.map((evt, i) => (
                     <span key={i} className="flex items-center">
                       <span className="relative mx-1.5 inline-block h-[6px] w-[6px] shrink-0 rounded-full bg-black" />
                       <span className="px-1">{evt}</span>

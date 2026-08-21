@@ -151,19 +151,7 @@ export default function MenuPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState({});
   const [productCounts, setProductCounts] = useState({});
-  const [promoEvents, setPromoEvents] = useState([]);
   const [scrolled, setScrolled] = useState(false);
-
-  const DEFAULT_PROMO_EVENTS = [
-    "Open 24 Hours",
-    "VIP Studio",
-    "Big Screen",
-    "High Speed Wi-fi",
-    "Live Music",
-    "City View",
-    "Portable Skate Park",
-  ];
-  const bannerEvents = promoEvents.length ? promoEvents : DEFAULT_PROMO_EVENTS;
 
   const searchRef = useRef(null);
   const sectionRefs = useRef({});
@@ -174,25 +162,6 @@ export default function MenuPage() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Fetch promo running text dari /api/promo
-  useEffect(() => {
-    let active = true;
-    fetch("/api/promo")
-      .then((res) => (res.ok ? res.json() : null))
-      .then((json) => {
-        if (!active || !json?.text?.trim()) return;
-        const events = json.text
-          .split(/\s*[-●]\s*/)
-          .map((e) => e.trim())
-          .filter(Boolean);
-        if (events.length) setPromoEvents(events);
-      })
-      .catch(() => {});
-    return () => {
-      active = false;
-    };
   }, []);
 
   // Load semua produk sekali + kategori
@@ -460,24 +429,6 @@ export default function MenuPage() {
                   Clear
                 </button>
               )}
-            </div>
-          </div>
-        </div>
-
-        {/* PROMO RUNNING TEXT */}
-        <div className="mb-4 flex min-h-[34px] w-full items-center overflow-hidden bg-[#f48149] px-4 py-[10px]">
-          <div className="relative w-full min-w-0 overflow-hidden">
-            <div className="animate-marquee flex min-w-max whitespace-nowrap text-[12px] font-extrabold leading-none text-black [letter-spacing:-0.5px]">
-              {[0, 1].map((copy) => (
-                <span key={copy} className="flex shrink-0 items-center">
-                  {bannerEvents.map((evt, i) => (
-                    <span key={i} className="flex items-center">
-                      <span className="relative mx-1.5 inline-block h-[6px] w-[6px] shrink-0 rounded-full bg-black" />
-                      <span className="px-1">{evt}</span>
-                    </span>
-                  ))}
-                </span>
-              ))}
             </div>
           </div>
         </div>
