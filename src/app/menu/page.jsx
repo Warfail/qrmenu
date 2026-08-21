@@ -363,57 +363,60 @@ export default function MenuPage() {
       />
 
       <div className="relative z-10 flex flex-1 flex-col">
-        {/* TOP NAVBAR */}
-        <header className="flex w-full items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-4">
-            <button
-              type="button"
-              onClick={() => router.push("/")}
-              aria-label="Kembali"
-              className="flex h-10 w-10 items-center justify-center border border-[#2a2a35] bg-[#18181e] transition hover:bg-[#1f1f27]"
-            >
-              <IconArrowLeft size={20} className="text-[#f3e3c7]" />
-            </button>
-            <div>
-              <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
-                Menu Selection
-              </p>
-              <p className="text-[10px] font-medium text-[#f48149] [letter-spacing:-0.5px]">
-                rooftop<span className="font-medium">fortyfive.</span>
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            aria-label="Buka daftar kategori"
-            onClick={() => setSidebarOpen(true)}
-            className="flex h-10 w-10 items-center justify-center border border-[#2a2a35] bg-[#18181e] transition hover:bg-[#1f1f27]"
-          >
-            <IconMenu2 size={20} className="text-[#f3e3c7]" />
-          </button>
-        </header>
-
-        {/* SEARCH BAR */}
-        <div className="px-6 pb-4">
-          <div className="flex min-h-[48px] w-full items-center gap-2.5 border border-[#2a2a35] bg-[#18181e] px-4">
-            <IconSearch size={18} className="shrink-0 text-[#f48149]" />
-            <input
-              ref={searchRef}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search dishes, cocktails, or grills..."
-              className="h-full w-full flex-1 bg-transparent text-[12px] font-extrabold text-[#f3e3c7] placeholder-zinc-500 outline-none [letter-spacing:-0.6px]"
-            />
-            {search && (
+        {/* STICKY NAVBAR + SEARCH */}
+        <div className="sticky top-0 z-40 w-full bg-[#0a0a0c]/85 backdrop-blur-md">
+          {/* TOP NAVBAR */}
+          <header className="flex w-full items-center justify-between px-6 py-3">
+            <div className="flex items-center gap-4">
               <button
                 type="button"
-                onClick={() => setSearch("")}
-                aria-label="Hapus pencarian"
-                className="shrink-0 border border-[#2a2a35] bg-[#2a2a2a] px-2 py-0.5 text-xs text-[#f3e3c7] hover:bg-white/[0.06]"
+                onClick={() => router.push("/")}
+                aria-label="Kembali"
+                className="flex h-10 w-10 items-center justify-center border border-[#2a2a35] bg-[#18181e] transition hover:bg-[#1f1f27]"
               >
-                Clear
+                <IconArrowLeft size={20} className="text-[#f3e3c7]" />
               </button>
-            )}
+              <div>
+                <p className="text-[17px] font-extrabold leading-tight text-[#f3e3c7] [letter-spacing:-0.85px]">
+                  Menu Selection
+                </p>
+                <p className="text-[10px] font-medium text-[#f48149] [letter-spacing:-0.5px]">
+                  rooftop<span className="font-medium">fortyfive.</span>
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              aria-label="Buka daftar kategori"
+              onClick={() => setSidebarOpen(true)}
+              className="flex h-10 w-10 items-center justify-center border border-[#2a2a35] bg-[#18181e] transition hover:bg-[#1f1f27]"
+            >
+              <IconMenu2 size={20} className="text-[#f3e3c7]" />
+            </button>
+          </header>
+
+          {/* SEARCH BAR */}
+          <div className="px-6 pb-4">
+            <div className="flex min-h-[48px] w-full items-center gap-2.5 border border-[#2a2a35] bg-[#18181e] px-4">
+              <IconSearch size={18} className="shrink-0 text-[#f48149]" />
+              <input
+                ref={searchRef}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search dishes, cocktails, or grills..."
+                className="h-full w-full flex-1 bg-transparent text-[12px] font-extrabold text-[#f3e3c7] placeholder-zinc-500 outline-none [letter-spacing:-0.6px]"
+              />
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  aria-label="Hapus pencarian"
+                  className="shrink-0 border border-[#2a2a35] bg-[#2a2a2a] px-2 py-0.5 text-xs text-[#f3e3c7] hover:bg-white/[0.06]"
+                >
+                  Clear
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -467,7 +470,7 @@ export default function MenuPage() {
                             {product.name}
                           </p>
                           <div className="mt-1 flex w-full items-center justify-between gap-3">
-                            <p className="text-[17px] font-extrabold text-[#f48149] [letter-spacing:-0.85px]">
+                            <p className="text-[16px] font-semibold text-[#f48149] [letter-spacing:-0.85px]">
                               {formatIDR(product.price)}
                             </p>
                             {inCart && inCart.qty > 0 ? (
