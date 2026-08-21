@@ -3,7 +3,6 @@ import { getSettingsCollection } from "@/lib/mongodb";
 
 export const dynamic = "force-dynamic";
 
-const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const OWNER_CHAT_ID = process.env.TELEGRAM_OWNER_CHAT_ID;
 
 function cleanPromo(lines) {
@@ -15,19 +14,6 @@ function cleanPromo(lines) {
     })
     .map((line) => line.trim().replace(/^-\s*/, "").replace(/\s*-\s*$/, "").trim())
     .filter(Boolean);
-}
-
-async function sendTelegram(chatId, text) {
-  if (!BOT_TOKEN) return;
-  try {
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chat_id: chatId, text }),
-    });
-  } catch {
-    // abaikan
-  }
 }
 
 export async function POST(request) {
@@ -46,21 +32,16 @@ export async function POST(request) {
 
   // Hanya owner yang diproses
   if (!OWNER_CHAT_ID || chatId !== String(OWNER_CHAT_ID)) {
-    await sendTelegram(chatId, "⛔ Kamu tidak berhak mengubah promo.");
     return NextResponse.json({ ok: true });
   }
 
+  // Hanya pesan berawalan #promo
   if (!text || !text.toLowerCase().startsWith("#promo")) {
-    await sendTelegram(
-      chatId,
-      "Gunakan format:\n#promo - event pertama\n- event kedua\n- event ketiga"
-    );
     return NextResponse.json({ ok: true });
   }
 
   const events = cleanPromo(text.split("\n"));
   if (events.length === 0) {
-    await sendTelegram(chatId, "Tidak ada event valid.");
     return NextResponse.json({ ok: true });
   }
 
@@ -73,11 +54,9 @@ export async function POST(request) {
       { $set: { value: promoText, updatedAt: new Date() } },
       { upsert: true }
     );
-    await sendTelegram(chatId, `✅ Promo diperbarui:\n${promoText}`);
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error("Telegram webhook DB error:", error);
-    await sendTelegram(chatId, "❌ Gagal menyimpan promo.");
+    console.error("Telegram route DB error:", error);
     return NextResponse.json({ ok: true }, { status: 500 });
   }
 }
