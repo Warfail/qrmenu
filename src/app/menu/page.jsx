@@ -151,9 +151,18 @@ export default function MenuPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedGroups, setExpandedGroups] = useState({});
   const [productCounts, setProductCounts] = useState({});
+  const [scrolled, setScrolled] = useState(false);
 
   const searchRef = useRef(null);
   const sectionRefs = useRef({});
+
+  // Deteksi scroll: navbar jadi solid setelah scroll
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   // Load semua produk sekali + kategori
   useEffect(() => {
@@ -363,8 +372,12 @@ export default function MenuPage() {
       />
 
       <div className="relative z-10 flex flex-1 flex-col">
-        {/* STICKY NAVBAR + SEARCH */}
-        <div className="sticky top-0 z-40 w-full bg-[#0a0a0c]/85 backdrop-blur-md">
+        {/* STICKY NAVBAR + SEARCH (transparan awal, solid saat scroll) */}
+        <div
+          className={`sticky top-0 z-40 w-full transition-colors duration-300 ${
+            scrolled ? "bg-[#0a0a0c] backdrop-blur-md" : "bg-transparent"
+          }`}
+        >
           {/* TOP NAVBAR */}
           <header className="flex w-full items-center justify-between px-6 py-3">
             <div className="flex items-center gap-4">
