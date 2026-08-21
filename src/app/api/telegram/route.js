@@ -5,6 +5,34 @@ export const dynamic = "force-dynamic";
 
 const OWNER_CHAT_ID = process.env.TELEGRAM_OWNER_CHAT_ID;
 
+const START_MESSAGE = `*ROOFTOP45 — Promo Bot* 🚀
+
+Gunakan format berikut untuk update promo:
+
+#promo - event pertama
+- event kedua
+- event ketiga
+
+Kirim pesan berawalan #promo untuk memperbarui teks berjalan (running text) di aplikasi.`;
+
+async function sendTelegram(chatId, text, parseMode = "Markdown") {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) return;
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text,
+        parse_mode: parseMode,
+      }),
+    });
+  } catch {
+    // abaikan error kirim
+  }
+}
+
 function cleanPromo(lines) {
   // Hapus baris "#promo", buang "-" di awal baris, saring baris kosong
   return lines
@@ -32,6 +60,12 @@ export async function POST(request) {
 
   // Hanya owner yang diproses
   if (!OWNER_CHAT_ID || chatId !== String(OWNER_CHAT_ID)) {
+    return NextResponse.json({ ok: true });
+  }
+
+  // Balasan /start
+  if (text.toLowerCase() === "/start") {
+    await sendTelegram(chatId, START_MESSAGE);
     return NextResponse.json({ ok: true });
   }
 
