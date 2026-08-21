@@ -91,7 +91,7 @@ export default function HomePage() {
         const text = json?.text?.trim();
         if (!text) return; // promo kosong → pakai default
         const events = text
-          .split("-")
+          .split(/\s*[-●]\s*/)
           .map((e) => e.trim())
           .filter(Boolean);
         if (events.length) setPromoEvents(events);

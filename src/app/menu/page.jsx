@@ -184,7 +184,7 @@ export default function MenuPage() {
       .then((json) => {
         if (!active || !json?.text?.trim()) return;
         const events = json.text
-          .split("-")
+          .split(/\s*[-●]\s*/)
           .map((e) => e.trim())
           .filter(Boolean);
         if (events.length) setPromoEvents(events);
